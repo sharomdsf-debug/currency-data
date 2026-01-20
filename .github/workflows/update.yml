@@ -1,5 +1,7 @@
 name: Update currency data
-
+permissions:
+  contents: write
+  
 on:
   schedule:
     - cron: "*/15 * * * *"   # ҳар 15 дақиқа

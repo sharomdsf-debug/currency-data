@@ -5,29 +5,34 @@ from datetime import datetime
 
 URL = "https://kurs.tj"
 
-response = requests.get(URL, timeout=20)
-response.raise_for_status()
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
 
-soup = BeautifulSoup(response.text, "html.parser")
+html = requests.get(URL, headers=headers, timeout=30).text
+soup = BeautifulSoup(html, "html.parser")
 
 banks = []
 
-for row in soup.find_all("tr"):
-    cols = row.find_all("td")
-    if len(cols) >= 4:
-        bank = cols[0].get_text(strip=True)
-        currency = cols[1].get_text(strip=True)
+tables = soup.find_all("table")
 
-        if currency == "RUB":
-            buy = cols[2].get_text(strip=True)
-            sell = cols[3].get_text(strip=True)
+for table in tables:
+    rows = table.find_all("tr")
+    for row in rows:
+        cols = [c.get_text(strip=True) for c in row.find_all("td")]
 
-            banks.append({
-                "bank": bank,
-                "buy": buy,
-                "sell": sell,
-                "updated": datetime.now().strftime("%H:%M")
-            })
+        # интизори формат: Бонк | Асъор | Харид | Фурӯш
+        if len(cols) >= 4:
+            bank = cols[0]
+            currency = cols[1]
+
+            if currency.upper() == "RUB":
+                banks.append({
+                    "bank": bank,
+                    "buy": cols[2],
+                    "sell": cols[3],
+                    "updated": datetime.now().strftime("%H:%M")
+                })
 
 data = {
     "updated": datetime.now().strftime("%Y-%m-%d %H:%M"),

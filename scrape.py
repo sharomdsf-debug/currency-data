@@ -25,22 +25,24 @@ for r in rows[1:]:
 
     bank_name = tds[0]
 
-    # RUB → TJS (харид)
-    rub_buy_raw = tds[2].replace(",", ".").strip()
+    # НБТ: 100 RUB = X TJS
+    raw_value = tds[2].replace(",", ".").strip()
 
     try:
-        rub_buy = float(rub_buy_raw)
+        value_for_100 = float(raw_value)
     except ValueError:
         continue
 
-    # 0.0000-ҳоро намегирем (мисли kurs.tj)
-    if rub_buy <= 0:
+    if value_for_100 <= 0:
         continue
+
+    # ✅ ТАБДИЛ: 1 RUB = X / 100 TJS
+    rub_to_tjs = round(value_for_100 / 100, 4)
 
     banks.append({
         "bank": bank_name,
         "currency": "RUB",
-        "buy": round(rub_buy, 4),
+        "buy": rub_to_tjs,
         "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
     })
 

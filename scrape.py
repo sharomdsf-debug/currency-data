@@ -20,19 +20,27 @@ rows = table.find_all("tr")
 
 for r in rows[1:]:
     tds = [td.get_text(strip=True) for td in r.find_all("td")]
-    if len(tds) < 4:
+    if len(tds) < 3:
         continue
 
-    bank = tds[0]
-    # Дар ҷадвали NBT сутунҳои RUB одатан 2-юм ва 3-юм ҳастанд
-    rub_buy = tds[2].replace(",", ".")
-    rub_sell = tds[3].replace(",", ".")
+    bank_name = tds[0]
+
+    # RUB → TJS (харид)
+    rub_buy_raw = tds[2].replace(",", ".").strip()
+
+    try:
+        rub_buy = float(rub_buy_raw)
+    except ValueError:
+        continue
+
+    # 0.0000-ҳоро намегирем (мисли kurs.tj)
+    if rub_buy <= 0:
+        continue
 
     banks.append({
-        "bank": bank,
+        "bank": bank_name,
         "currency": "RUB",
-        "buy": rub_buy,
-        "sell": rub_sell,
+        "buy": round(rub_buy, 4),
         "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
     })
 
@@ -45,4 +53,4 @@ data = {
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 
-print("OK. Banks:", len(banks))
+print("OK. RUB → TJS banks:", len(banks))

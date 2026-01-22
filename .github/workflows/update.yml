@@ -4,7 +4,7 @@ permissions:
   
 on:
   schedule:
-    - cron: "*/1 * * * *"   # ҳар 15 дақиқа
+    - cron: "*/5 * * * *"   # ҳар 5 дақиқа
   workflow_dispatch:
 
 jobs:

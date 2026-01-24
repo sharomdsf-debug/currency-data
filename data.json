@@ -2,7 +2,7 @@
   "currency": "RUB_TJS",
   "type": "sell",
   "source": "kurs.tj (manual via screenshot)",
-  "updated": "2026-01-23 3:49",
+  "updated": "2027-01-23 10:00",
   "banks": [
     {
       "bank": "Бонки миллии Тоҷикистон (НБТ)",
@@ -34,7 +34,7 @@
     },
     {
       "bank": "Хумо",
-      "sell": 0.1225
+      "sell": 0.1222
     }
   ]
 }

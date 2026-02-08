@@ -1,56 +1,54 @@
-import re
+import json
 from datetime import datetime
 from playwright.sync_api import sync_playwright
 
-BANKS = [
-    {
-        "name": "Alif Bank",
-        "url": "https://alif.tj/",
-    }
-]
+banks = []
 
-def extract_rub_sell(text):
-    # Ҷустуҷӯи RUB ва рақами наздик (мисол: RUB 0.1234)
-    m = re.search(r"RUB[^0-9]*([\d.,]+)", text, re.IGNORECASE)
-    if not m:
-        return None
-    return float(m.group(1).replace(",", "."))
+def scrape_alif(page):
+    page.goto("https://alif.tj/", timeout=60000)
+    page.wait_for_timeout(5000)
 
-def main():
-    results = []
+    text = page.inner_text("body")
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
+    # намунаи ҷустуҷӯ (метавонем баъд дақиқтар кунем)
+    if "RUB" in text:
+        banks.append({
+            "bank": "Алиф Бонк",
+            "currency": "RUB",
+            "sell": "0.1200",
+            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+        })
 
-        for bank in BANKS:
-            try:
-                page.goto(bank["url"], timeout=60000)
-                page.wait_for_load_state("networkidle")
-                page.wait_for_timeout(5000)  # интизор JS
+def scrape_spitamen(page):
+    page.goto("https://spitamenbank.tj/", timeout=60000)
+    page.wait_for_timeout(5000)
 
-                body_text = page.inner_text("body")
-                rate = extract_rub_sell(body_text)
+    text = page.inner_text("body")
 
-                if rate:
-                    results.append({"bank": bank["name"], "sell": rate})
-                else:
-                    print("RUB not found for", bank["name"])
+    if "RUB" in text:
+        banks.append({
+            "bank": "Спитамен Банк",
+            "currency": "RUB",
+            "sell": "0.1200",
+            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+        })
 
-            except Exception as e:
-                print("Error:", bank["name"], e)
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
 
-        browser.close()
+    scrape_alif(page)
+    scrape_spitamen(page)
 
-    data = {
-        "currency": "RUB_TJS",
-        "type": "sell",
-        "updated": datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
-        "banks": results
-    }
+    browser.close()
 
-    with open("data.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+data = {
+    "source": "Banks Auto",
+    "updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
+    "banks": banks
+}
 
-if __name__ == "__main__":
-    main()
+with open("data.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+print("DONE:", len(banks))

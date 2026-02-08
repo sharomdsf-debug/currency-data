@@ -2,7 +2,7 @@ from playwright.sync_api import sync_playwright
 import json, re
 from datetime import datetime
 
-# ---------------- ALIF ----------------
+# ---------- ALIF ----------
 def get_alif_rub(page):
     page.goto("https://alif.tj/", timeout=120000)
     page.wait_for_load_state("domcontentloaded")
@@ -23,17 +23,22 @@ def get_alif_rub(page):
     }
 
 
-# ---------------- DUSHANBE CITY ----------------
+# ---------- DUSHANBE CITY ----------
 def get_dc_rub(page):
     page.goto("https://dc.tj/", timeout=120000)
-    page.wait_for_load_state("domcontentloaded")
-    page.wait_for_timeout(8000)
+    page.wait_for_load_state("networkidle")
+    page.wait_for_timeout(6000)
 
-    text = page.inner_text("body")
-    match = re.search(r"RUB\s*([\d.]+)\s*TJS\s*([\d.]+)", text)
+    row = page.locator("text=RUB").first
+    block = row.locator("xpath=..").inner_text()
 
-    sell = match.group(1) if match else "0.0000"
-    buy = match.group(2) if match else "0.0000"
+    nums = re.findall(r"\d+\.\d+", block)
+
+    if len(nums) >= 2:
+        sell = nums[0]
+        buy = nums[1]
+    else:
+        buy = sell = "0.0000"
 
     return {
         "bank": "Dushanbe City",
@@ -44,15 +49,13 @@ def get_dc_rub(page):
     }
 
 
-# ---------------- HUMO ----------------
+# ---------- HUMO ----------
 def get_humo_rub(page):
     page.goto("https://humo.tj/ru/", timeout=120000)
     page.wait_for_load_state("domcontentloaded")
     page.wait_for_timeout(8000)
 
     text = page.inner_text("body")
-
-    # 1 RUB 0.1205 0.1230
     match = re.search(r"1\s*RUB\s*([\d.]+)\s*([\d.]+)", text)
 
     buy = match.group(1) if match else "0.0000"
@@ -67,26 +70,21 @@ def get_humo_rub(page):
     }
 
 
-# ---------------- MAIN ----------------
+# ---------- MAIN ----------
 with sync_playwright() as p:
-    browser = p.chromium.launch(
-        headless=True,
-        args=["--no-sandbox", "--disable-dev-shm-usage"]
-    )
-
+    browser = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
     context = browser.new_context(
-        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
     )
-
     page = context.new_page()
 
-    banks = []
-    banks.append(get_alif_rub(page))
-    banks.append(get_dc_rub(page))
-    banks.append(get_humo_rub(page))
+    banks = [
+        get_alif_rub(page),
+        get_dc_rub(page),
+        get_humo_rub(page)
+    ]
 
     browser.close()
-
 
 data = {
     "source": "Auto Banks",

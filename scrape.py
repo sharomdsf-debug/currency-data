@@ -45,7 +45,7 @@ def get_dc_rub(page):
         sell = buy = "0.0000"
 
     return {
-        "bank": "Dushanbe City",
+        "bank": "Dushanbe City11",
         "currency": "RUB",
         "buy": buy,
         "sell": sell,

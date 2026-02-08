@@ -27,17 +27,20 @@ def get_alif_rub(page):
 
 def get_dc_rub(page):
     page.goto("https://dc.tj/", timeout=60000)
-    page.wait_for_selector("text=RUB")
 
-    text = page.inner_text("body")
+    # интизор мешавем то ҷадвал бор шавад
+    page.wait_for_selector("text=Валюта")
 
-    # Ҷустуҷӯи сатри RUB + ду рақам
+    # сатри RUB
+    row = page.locator("text=RUB").locator("xpath=ancestor::div[1]")
+    text = row.inner_text()
+
     import re
-    match = re.search(r"RUB\s+([\d.]+)\s*TJS\s+([\d.]+)", text)
+    numbers = re.findall(r"\d+\.\d+", text)
 
-    if match:
-        sell = match.group(1)
-        buy  = match.group(2)
+    if len(numbers) >= 2:
+        sell = numbers[0]   # Продажа
+        buy  = numbers[1]   # Покупка
     else:
         sell = buy = "0.0000"
 

@@ -1,55 +1,29 @@
-from playwright.sync_api import sync_playwright
-import json
-from datetime import datetime
+def get_eskhata_rub(page):
+    page.goto("https://eskhata.com/", timeout=60000)
 
+    # интизор мешавем то ҷадвали курсҳо бор шавад
+    page.wait_for_selector("text=Курсы валют")
 
-def get_dc_rub(page):
-    page.goto("https://dc.tj/", timeout=60000)
+    # сатри RUB-ро меёбем
+    rub_row = page.locator("text=RUB").first.locator("..")
 
-    # интизор мешавем ҷадвал бор шавад
-    page.wait_for_selector("text=RUB")
+    text = rub_row.inner_text()
 
-    # тамоми матни саҳифаро мегирем
-    text = page.inner_text("body")
+    # матн мисли:
+    # RUB 0.1180 0.1200 0.1222
+    import re
+    nums = re.findall(r"\d+\.\d+", text)
 
-    # ҷудо мекунем қисми RUB
-    lines = text.splitlines()
-
-    sell = buy = "0.0000"
-
-    for i, line in enumerate(lines):
-        if "RUB" in line:
-            # 2 сатри баъдӣ рақамҳоянд
-            sell = lines[i + 1].replace("TJS", "").strip()
-            buy  = lines[i + 2].replace("TJS", "").strip()
-            break
+    if len(nums) >= 2:
+        buy = nums[0]   # Банк покупает
+        sell = nums[1]  # Банк продает
+    else:
+        buy = sell = "0.0000"
 
     return {
-        "bank": "Dushanbe City",
+        "bank": "Эсхата Банк",
         "currency": "RUB",
         "buy": buy,
         "sell": sell,
         "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
     }
-
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True)
-    page = browser.new_page()
-
-    banks_data = []
-    banks_data.append(get_dc_rub(page))
-
-    browser.close()
-
-
-data = {
-    "source": "Auto Banks",
-    "updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
-    "banks": banks_data
-}
-
-with open("data.json", "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
-
-print("UPDATED:", data)

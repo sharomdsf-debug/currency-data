@@ -25,29 +25,31 @@ def get_alif_rub(page):
     }
 
 
-def get_dc_rub(page):
-    page.goto("https://dc.tj/", timeout=60000)
+from playwright.sync_api import sync_playwright
+import re
+from datetime import datetime
 
-    # интизор мешавем то ҷадвал бор шавад
-    page.wait_for_selector("text=Валюта")
+def get_dc_rub():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto("https://dc.tj/", timeout=60000)
 
-    # сатри RUB
-    row = page.locator("text=RUB").locator("xpath=ancestor::div[1]")
-    text = row.inner_text()
+        # интизор мешавем то RUB пайдо шавад
+        page.wait_for_selector("text=RUB")
 
-    import re
-    numbers = re.findall(r"\d+\.\d+", text)
+        # блоки RUB-ро мегирем
+        rub_block = page.locator("text=RUB").first.locator("..")
+        text = rub_block.inner_text()
 
-    if len(numbers) >= 2:
-        sell = numbers[0]   # Продажа
-        buy  = numbers[1]   # Покупка
-    else:
-        sell = buy = "0.0000"
+        print("DEBUG DC BLOCK:", text)  # барои тафтиш
 
-    return {
-        "bank": "Dushanbe City11",
-        "currency": "RUB",
-        "buy": buy,
-        "sell": sell,
-        "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
-    }
+        # ҷустуҷӯи 2 рақам
+        nums = re.findall(r"\d+\.\d+", text)
+
+        sell = nums[0]  # Продажа
+        buy  = nums[1]  # Покупка
+
+        browser.close()
+
+        return buy, sell

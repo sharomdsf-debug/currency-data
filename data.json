@@ -1,18 +1,13 @@
 {
-  "source": "Banks Auto",
-  "updated": "2026-02-08 10:35",
+  "source": "Auto Banks",
+  "updated": "2026-02-08 10:47",
   "banks": [
     {
       "bank": "Алиф Бонк",
       "currency": "RUB",
-      "sell": "0.1200",
-      "updated": "2026-02-08 10:35"
-    },
-    {
-      "bank": "Спитамен Банк",
-      "currency": "RUB",
-      "sell": "0.1200",
-      "updated": "2026-02-08 10:35"
+      "buy": "0.1205",
+      "sell": "0.1228",
+      "updated": "2026-02-08 10:47"
     }
   ]
 }

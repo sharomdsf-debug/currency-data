@@ -8,8 +8,8 @@ def get_alif_rub(page):
     page.wait_for_timeout(5000)
 
     text = page.inner_text("body")
-
     match = re.search(r"1\s*RUB\s*([\d.]+)\s*([\d.]+)", text)
+
     if match:
         buy = match.group(1)
         sell = match.group(2)
@@ -27,17 +27,19 @@ def get_alif_rub(page):
 
 def get_dc_rub(page):
     page.goto("https://dc.tj/", timeout=60000)
+
+    # интизор мешавем то блоки RUB намоён шавад
     page.wait_for_selector("text=RUB")
 
-    text = page.inner_text("body")
+    # блоки RUB
+    rub_row = page.locator("text=RUB").first.locator("xpath=ancestor::*[self::div or self::tr][1]")
 
-    # Формат дар сайт:
-    # RUB 0.1185 TJS 0.1205 TJS
-    match = re.search(r"RUB\s*([\d.]+)\s*TJS\s*([\d.]+)\s*TJS", text)
+    # ҳамаи рақамҳои дохили он блок
+    nums = re.findall(r"\d+\.\d+", rub_row.inner_text())
 
-    if match:
-        sell = match.group(1)
-        buy  = match.group(2)
+    if len(nums) >= 2:
+        sell = nums[0]  # Продажа
+        buy  = nums[1]  # Покупка
     else:
         sell = buy = "0.0000"
 
@@ -55,11 +57,7 @@ with sync_playwright() as p:
     page = browser.new_page()
 
     banks_data = []
-
-    # Алиф
     banks_data.append(get_alif_rub(page))
-
-    # Dushanbe City
     banks_data.append(get_dc_rub(page))
 
     browser.close()

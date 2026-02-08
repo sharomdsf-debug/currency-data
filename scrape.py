@@ -1,72 +1,56 @@
-import requests
-import json
+from playwright.sync_api import sync_playwright
+import re, json
 from datetime import datetime
 
 def get_eskhata_rub():
-    url = "https://meta.eskhata.com/api/PublicWebPlugin/GetSettings"
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
 
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "application/json",
-        "Referer": "https://eskhata.com/",
-        "Origin": "https://eskhata.com"
-    }
+        # Мобилӣ месозем
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1",
+            viewport={"width": 390, "height": 844}
+        )
 
-    rub_buy = "0.0000"
-    rub_sell = "0.0000"
+        page = context.new_page()
+        page.goto("https://eskhata.com/", timeout=60000)
 
-    try:
-        r = requests.get(url, headers=headers, timeout=15)
+        page.wait_for_timeout(5000)
 
-        # агар сервер ҷавоб надод
-        if r.status_code != 200:
-            print("Server error:", r.status_code)
-            return rub_buy, rub_sell
+        text = page.inner_text("body")
 
-        data = r.json()
+        # RUB блок
+        match = re.search(
+            r"RUB.*?Банк покупает\s*([\d.]+).*?Банк продает\s*([\d.]+)",
+            text,
+            re.S
+        )
 
-        # дохили JSON ҷустуҷӯи RUB
-        def search(obj):
-            nonlocal rub_buy, rub_sell
+        if match:
+            buy = match.group(1)
+            sell = match.group(2)
+        else:
+            buy = sell = "0.0000"
 
-            if isinstance(obj, dict):
-                code = str(obj.get("code") or obj.get("currency") or "").upper()
-                if code == "RUB":
-                    rub_buy  = str(obj.get("buy")  or obj.get("purchase") or rub_buy)
-                    rub_sell = str(obj.get("sell") or obj.get("sale")     or rub_sell)
+        browser.close()
 
-                for v in obj.values():
-                    search(v)
-
-            elif isinstance(obj, list):
-                for item in obj:
-                    search(item)
-
-        search(data)
-
-    except Exception as e:
-        print("ERROR:", e)
-
-    return rub_buy, rub_sell
-
-
-buy, sell = get_eskhata_rub()
-
-data = {
-    "source": "Auto Banks",
-    "updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
-    "banks": [
-        {
+        return {
             "bank": "Эсхата",
             "currency": "RUB",
             "buy": buy,
             "sell": sell,
             "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
         }
-    ]
+
+
+# -------- RUN --------
+data = {
+    "source": "Auto Banks",
+    "updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
+    "banks": [get_eskhata_rub()]
 }
 
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 
-print("ESKHATA RUB:", buy, sell)
+print("ESKHATA:", data)

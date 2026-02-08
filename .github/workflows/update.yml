@@ -2,7 +2,7 @@ name: Auto Update Rates
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
       - name: Commit data
         run: |
           git config --global user.name "bot"
-          git config --global user.email "bot@github.com"
+          git config --global user.email "bot@bot.com"
           git add data.json
           git commit -m "auto update" || echo "no changes"
           git push

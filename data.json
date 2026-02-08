@@ -1,13 +1,20 @@
 {
   "source": "Auto Banks",
-  "updated": "2026-02-08 10:47",
+  "updated": "2026-02-08 11:14",
   "banks": [
     {
       "bank": "Алиф Бонк",
       "currency": "RUB",
       "buy": "0.1205",
       "sell": "0.1228",
-      "updated": "2026-02-08 10:47"
+      "updated": "2026-02-08 11:14"
+    },
+    {
+      "bank": "Dushanbe City",
+      "currency": "RUB",
+      "buy": "Юридическим",
+      "sell": "лицам",
+      "updated": "2026-02-08 11:14"
     }
   ]
 }

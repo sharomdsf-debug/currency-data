@@ -1,27 +1,27 @@
 {
   "source": "Auto Banks",
-  "updated": "2026-02-08 15:35",
+  "updated": "2026-02-08 15:45",
   "banks": [
     {
       "bank": "Alif",
       "currency": "RUB",
       "buy": "0.1205",
       "sell": "0.1228",
-      "updated": "2026-02-08 15:35"
+      "updated": "2026-02-08 15:45"
     },
     {
       "bank": "Dushanbe City",
       "currency": "RUB",
       "buy": "0.0000",
       "sell": "0.0000",
-      "updated": "2026-02-08 15:35"
+      "updated": "2026-02-08 15:45"
     },
     {
       "bank": "Humo",
       "currency": "RUB",
       "buy": "0.1205",
       "sell": "0.1230",
-      "updated": "2026-02-08 15:35"
+      "updated": "2026-02-08 15:45"
     }
   ]
 }

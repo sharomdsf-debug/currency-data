@@ -1,56 +1,40 @@
 from playwright.sync_api import sync_playwright
-import re, json
+import re
 from datetime import datetime
 
-def get_eskhata_rub():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+def get_humo_rub(page):
+    page.goto("https://humo.tj/ru/", timeout=60000)
 
-        # Мобилӣ месозем
-        context = browser.new_context(
-            user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1",
-            viewport={"width": 390, "height": 844}
-        )
+    # интизор мешавем блоки курсҳо
+    page.wait_for_selector("text=Курсы валют")
 
-        page = context.new_page()
-        page.goto("https://eskhata.com/", timeout=60000)
+    text = page.inner_text("body")
 
-        page.wait_for_timeout(5000)
+    # ҷустуҷӯи сатри RUB
+    match = re.search(r"1\s*RUB\s*([\d.]+)\s*([\d.]+)", text)
 
-        text = page.inner_text("body")
+    if match:
+        buy  = match.group(1)
+        sell = match.group(2)
+    else:
+        buy = sell = "0.0000"
 
-        # RUB блок
-        match = re.search(
-            r"RUB.*?Банк покупает\s*([\d.]+).*?Банк продает\s*([\d.]+)",
-            text,
-            re.S
-        )
-
-        if match:
-            buy = match.group(1)
-            sell = match.group(2)
-        else:
-            buy = sell = "0.0000"
-
-        browser.close()
-
-        return {
-            "bank": "Эсхата",
-            "currency": "RUB",
-            "buy": buy,
-            "sell": sell,
-            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
-        }
+    return {
+        "bank": "Хумо",
+        "currency": "RUB",
+        "buy": buy,
+        "sell": sell,
+        "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+    }
 
 
-# -------- RUN --------
-data = {
-    "source": "Auto Banks",
-    "updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
-    "banks": [get_eskhata_rub()]
-}
+# ---- ИҶРО ----
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
 
-with open("data.json", "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
+    humo = get_humo_rub(page)
 
-print("ESKHATA:", data)
+    browser.close()
+
+print(humo)

@@ -1,5 +1,18 @@
 {
   "source": "Banks Auto",
-  "updated": "",
-  "banks": []
+  "updated": "2026-02-08 10:35",
+  "banks": [
+    {
+      "bank": "Алиф Бонк",
+      "currency": "RUB",
+      "sell": "0.1200",
+      "updated": "2026-02-08 10:35"
+    },
+    {
+      "bank": "Спитамен Банк",
+      "currency": "RUB",
+      "sell": "0.1200",
+      "updated": "2026-02-08 10:35"
+    }
+  ]
 }

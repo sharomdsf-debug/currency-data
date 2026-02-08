@@ -8,8 +8,8 @@ def get_alif_rub(page):
     page.wait_for_timeout(5000)
 
     text = page.inner_text("body")
-
     match = re.search(r"1\s*RUB\s*([\d.]+)\s*([\d.]+)", text)
+
     if match:
         buy = match.group(1)
         sell = match.group(2)
@@ -25,31 +25,47 @@ def get_alif_rub(page):
     }
 
 
-from playwright.sync_api import sync_playwright
-import re
-from datetime import datetime
+def get_dc_rub(page):
+    page.goto("https://dc.tj/", timeout=60000)
+    page.wait_for_selector("text=RUB")
 
-def get_dc_rub():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.goto("https://dc.tj/", timeout=60000)
+    rub_block = page.locator("text=RUB").first.locator("..")
+    text = rub_block.inner_text()
 
-        # интизор мешавем то RUB пайдо шавад
-        page.wait_for_selector("text=RUB")
+    nums = re.findall(r"\d+\.\d+", text)
+    if len(nums) >= 2:
+        sell = nums[0]
+        buy = nums[1]
+    else:
+        sell = buy = "0.0000"
 
-        # блоки RUB-ро мегирем
-        rub_block = page.locator("text=RUB").first.locator("..")
-        text = rub_block.inner_text()
+    return {
+        "bank": "Dushanbe City",
+        "currency": "RUB",
+        "buy": buy,
+        "sell": sell,
+        "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+    }
 
-        print("DEBUG DC BLOCK:", text)  # барои тафтиш
 
-        # ҷустуҷӯи 2 рақам
-        nums = re.findall(r"\d+\.\d+", text)
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
 
-        sell = nums[0]  # Продажа
-        buy  = nums[1]  # Покупка
+    banks = []
+    banks.append(get_alif_rub(page))
+    banks.append(get_dc_rub(page))   # ← ҲАМИН ҶО КОР МЕКУНАД
 
-        browser.close()
+    browser.close()
 
-        return buy, sell
+
+data = {
+    "source": "Auto Banks",
+    "updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    "banks": banks
+}
+
+with open("data.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+print("DONE:", banks)

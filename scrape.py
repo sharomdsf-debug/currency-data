@@ -1,5 +1,6 @@
 from playwright.sync_api import sync_playwright
 import json
+import re
 from datetime import datetime
 
 
@@ -7,17 +8,18 @@ def get_humo_rub(page):
     page.goto("https://humo.tj/ru/", timeout=60000)
     page.wait_for_timeout(5000)
 
-    rows = page.locator("text=RUB").locator("..")
+    text = page.inner_text("body")
 
-    if rows.count() == 0:
+    # сатри RUB чунин аст:
+    # 1 RUB 0.1205 0.1230
+    match = re.search(r"1\s*RUB\s*([\d.]+)\s*([\d.]+)", text)
+
+    if not match:
+        print("RUB NOT FOUND")
         return None
 
-    row = rows.first
-    numbers = row.locator("xpath=.//text()[contains(.,'.')]").all_inner_texts()
-
-    # Одатан 2 рақам аст: покупка, продажа
-    buy = numbers[0].strip()
-    sell = numbers[1].strip()
+    buy = match.group(1)
+    sell = match.group(2)
 
     return {
         "bank": "Humo",

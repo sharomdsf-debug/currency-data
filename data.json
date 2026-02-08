@@ -1,13 +1,13 @@
 {
   "source": "Auto Banks",
-  "updated": "2026-02-08 14:08",
+  "updated": "2026-02-08 14:41",
   "banks": [
     {
       "bank": "Эсхата",
       "currency": "RUB",
       "buy": "0.0000",
       "sell": "0.0000",
-      "updated": "2026-02-08 14:08"
+      "updated": "2026-02-08 14:41"
     }
   ]
 }

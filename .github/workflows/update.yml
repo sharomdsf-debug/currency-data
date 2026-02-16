@@ -2,15 +2,16 @@ name: Update Currency Rates with Grok
 
 on:
   schedule:
-    - cron: '0 */6 * * *'     # ҳар 6 соат (4 маротиба дар рӯз)
-  workflow_dispatch:          # дастӣ пахш кардан
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,19 +21,19 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run Grok Scraper
+      - name: Run scraper
         env:
           GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
         run: python scrape.py
 
-      - name: Commit & Push if changed
+      - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data.json
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No changes"
           else
-            git commit -m "🔄 Auto update currency rates - $(date +'%Y-%m-%d %H:%M')"
+            git commit -m "Auto update currency rates"
             git push
           fi

@@ -18,12 +18,31 @@ BANKS = [
 
 def fetch_html(url):
     try:
-        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        r = requests.get(
+            url,
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=20
+        )
         r.raise_for_status()
         return r.text
     except Exception as e:
         print("Fetch error:", e)
         return None
+
+
+def clean_grok_response(content):
+    content = content.strip()
+
+    # Агар
+    if content.startswith("
+"):
+        content = content.replace("
+        content = content.replace("
+", "")
+        content = content.strip()
+
+    return content
+
 
 def extract_with_grok(html, bank_name):
     if not html:
@@ -37,7 +56,7 @@ def extract_with_grok(html, bank_name):
     prompt = f"""
 Аз HTML қурби 1 RUB ба TJS-ро ёб.
 Калимаҳо: RUB, покупка, продажа, харид, фурӯш, buy, sell.
-Фақат JSON баргардон:
+Фақат JSON баргардон.
 
 {{
   "bank": "{bank_name}",
@@ -73,11 +92,8 @@ HTML:
             print("API error:", response.text)
             return None
 
-        content = response.json()["choices"][0]["message"]["content"].strip()
-
-        if content.startswith("
-            content = content.replace("
-json", "").replace("`", "").strip()
+        content = response.json()["choices"][0]["message"]["content"]
+        content = clean_grok_response(content)
 
         data = json.loads(content)
 
@@ -89,6 +105,9 @@ json", "").replace("`", "").strip()
     except Exception as e:
         print("Parsing error:", e)
         return None
+
+
+# ================= MAIN =================
 
 all_rates = []
 
@@ -115,4 +134,4 @@ final_data = {
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("data.json updated")
+print("data.json updated successfully")

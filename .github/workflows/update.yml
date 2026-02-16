@@ -1,43 +1,30 @@
-name: Update Currency Rates with Playwright
+name: Update Rates with Grok web_search
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # ҳар 6 соат (4 маротиба дар рӯз)
-  workflow_dispatch:        # дастӣ запуск кардан
+    - cron: '0 */4 * * *'   # ҳар 4 соат
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10     # job-ро 10 дақиқа иҷозат медиҳад (кофӣ аст)
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 playwright
-
-      - name: Install Playwright browsers
-        run: playwright install --with-deps chromium
-
-      - name: Run scraper script
+      - name: Run Grok with web_search
+        env:
+          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
         run: python scrape.py
 
-      - name: Commit and push changes if any
+      - name: Commit & Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data.json
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "🔄 Автоматӣ навсозӣ қурби асъорҳо - $(date +'%Y-%m-%d %H:%M')"
-            git push
-          fi
+          git diff --staged --quiet || git commit -m "Auto update from Grok web_search $(date +'%Y-%m-%d %H:%M')"
+          git push

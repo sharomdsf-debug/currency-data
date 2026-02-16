@@ -1,54 +1,52 @@
-import requests
+from playwright.sync_api import sync_playwright
 import json
-import os
-import time
 from datetime import datetime
 
-GROK_API_KEY = os.getenv("GROK_API_KEY")
-
 BANKS = [
-    {"name": "Alif", "url": "https://alif.tj/ru"},
-    {"name": "Humo", "url": "https://humo.tj/ru/"},
-    {"name": "DC", "url": "https://dc.tj/"},
-    {"name": "Imon", "url": "https://imon.tj/"},
-    {"name": "Eskhata", "url": "https://eskhata.com/"}
+    {"name": "Alif", "url": "https://alif.tj/ru", "buy_sel": ".buy-price", "sell_sel": ".sell-price"},
+    {"name": "Humo", "url": "https://humo.tj/ru/", "buy_sel": ".buy-rate", "sell_sel": ".sell-rate"},
+    {"name": "DC", "url": "https://dc.tj/", "buy_sel": ".buy-value", "sell_sel": ".sell-value"},
+    {"name": "Imon", "url": "https://imon.tj/", "buy_sel": ".purchase", "sell_sel": ".sale"},
+    {"name": "Eskhata", "url": "https://eskhata.com/", "buy_sel": "td.buy", "sell_sel": "td.sell"},
 ]
 
 rates = []
 
-for bank in BANKS:
-    print(f"🔄 {bank['name']} - оғоз шуд...")
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
 
-    prompt = f"""Қурби 1 RUB ба TJS (харид ва фурӯш)-ро аз {bank['url']} барор. 
-Саҳифаро кушо, JS-ро иҷро кун ва дақиқ барор. 
-Фақат JSON баргардон."""
+    for bank in BANKS:
+        try:
+            page.goto(bank["url"], wait_until="networkidle", timeout=60000)
+            page.wait_for_timeout(10000)  # 10 сония барои JS
 
-    try:
-        time.sleep(25)   # 25 сония интизорӣ — барои Grok вақт дошта бошад
+            # Ҷустуҷӯи умумӣ барои RUB
+            rub_element = page.query_selector('text=/RUB|рубль/i')
+            if rub_element:
+                parent = rub_element.evaluate_handle("el => el.closest('tr') or el.closest('.currency-item') or el.closest('div')")
+                if parent:
+                    buy = parent.query_selector(bank["buy_sel"] or 'text[содержит("покупка") or "buy" or "харид"] ~ span, td')
+                    sell = parent.query_selector(bank["sell_sel"] or 'text[содержит("продажа") or "sell" or "фурӯш"] ~ span, td')
 
-        resp = requests.post(
-            "https://api.x.ai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {GROK_API_KEY}", "Content-Type": "application/json"},
-            json={
-                "model": "grok-4-1-fast",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,
-                "max_tokens": 400
-            },
-            timeout=120
-        )
+                    rub_buy = float(buy.inner_text().strip().replace(',', '.')) if buy else None
+                    rub_sell = float(sell.inner_text().strip().replace(',', '.')) if sell else None
 
-        content = resp.json()["choices"][0]["message"]["content"].strip()
-        if "```" in content:
-            content = content.split("```json")[-1].split("```")[0].strip()
+                    rates.append({
+                        "bank": bank["name"],
+                        "rub_buy": rub_buy,
+                        "rub_sell": rub_sell,
+                        "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+                    })
+                    print(f"{bank['name']} тайёр: {rub_buy} / {rub_sell}")
+            else:
+                rates.append({"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")})
 
-        data = json.loads(content)
-        rates.append(data)
-        print(f"✅ {bank['name']} тайёр")
+        except Exception as e:
+            print(f"Хато {bank['name']}: {str(e)}")
+            rates.append({"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")})
 
-    except Exception as e:
-        print(f"❌ Хато {bank['name']}: {str(e)}")
-        rates.append({"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")})
+    browser.close()
 
 final_data = {
     "last_updated": datetime.now().isoformat(),
@@ -58,4 +56,4 @@ final_data = {
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("🎉 Тайёр! Процесс {0} дақиқа вақт гирифт".format(int(time.time() - time.time())))  # вақт нишон медиҳад
+print("Тайёр!")

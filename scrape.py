@@ -6,7 +6,7 @@ from datetime import datetime
 GROK_API_KEY = os.getenv("GROK_API_KEY")
 
 if not GROK_API_KEY:
-    raise ValueError("GROK_API_KEY not found in environment variables")
+    raise ValueError("GROK_API_KEY not set")
 
 BANKS = [
     {"name": "Alif", "url": "https://alif.tj/ru"},
@@ -19,61 +19,56 @@ BANKS = [
 
 def fetch_html(url):
     try:
-        response = requests.get(
-            url,
-            headers={"User-Agent": "Mozilla/5.0"},
-            timeout=20
-        )
-        response.raise_for_status()
-        return response.text
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        r.raise_for_status()
+        return r.text
     except Exception as e:
         print("Fetch error:", e)
         return None
 
 
+def clean_json_block(text):
+    text = text.strip()
+    if text.startswith("
+        text = text.replace("
+json", "")
+        text = text.replace("`", "")
+    return text.strip()
+
+
 def extract_with_grok(html, bank_name):
     if not html:
-        return {
-            "bank": bank_name,
-            "rub_buy": None,
-            "rub_sell": None,
-            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
-        }
+        return None
 
-    prompt = (
-        "Аз HTML-и зер қурби 1 RUB ба TJS-ро барор.\n"
-        "Калимаҳои муҳим: RUB, Рубль, покупка, продажа, харид, фурӯш, buy, sell.\n"
-        "Фақат JSON баргардон, ҳеҷ матни дигар нанавис.\n\n"
-        "{\n"
-        '  "bank": "' + bank_name + '",\n'
-        '  "rub_buy": 0.12,\n'
-        '  "rub_sell": 0.13,\n'
-        '  "updated": "2026-01-01 12:00"\n'
-        "}\n\n"
-        "HTML:\n" + html[:25000]
-    )
+    prompt = f"""
+Аз HTML қурби 1 RUB ба TJS-ро барор.
+Фақат JSON баргардон.
+Формат:
+
+{{
+  "bank": "{bank_name}",
+  "rub_buy": 0.12,
+  "rub_sell": 0.13
+}}
+
+HTML:
+{html[:20000]}
+"""
 
     try:
         response = requests.post(
             "https://api.x.ai/v1/chat/completions",
             headers={
-                "Authorization": "Bearer " + GROK_API_KEY,
+                "Authorization": f"Bearer {GROK_API_KEY}",
                 "Content-Type": "application/json"
             },
             json={
                 "model": "grok-4-1-fast",
                 "messages": [
-                    {
-                        "role": "system",
-                        "content": "Ту фақат JSON бармегардонӣ. Ҳеҷ матни дигар набошад."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
+                    {"role": "system", "content": "Фақат JSON баргардон."},
+                    {"role": "user", "content": prompt}
                 ],
-                "temperature": 0,
-                "max_tokens": 300
+                "temperature": 0
             },
             timeout=40
         )
@@ -82,31 +77,22 @@ def extract_with_grok(html, bank_name):
             print("API error:", response.text)
             return None
 
-        content = response.json()["choices"][0]["message"]["content"].strip()
-
-        # тоза кардани
-        if content.startswith("
-"):
-            content = content.replace("
-            content = content.replace("
-", "")
-            content = content.strip()
+        content = response.json()["choices"][0]["message"]["content"]
+        content = clean_json_block(content)
 
         data = json.loads(content)
-
-        if "updated" not in data:
-            data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         return data
 
     except Exception as e:
-        print("Grok parsing error:", e)
+        print("Parsing error:", e)
         return None
 
 
 # ================= MAIN =================
 
-all_rates = []
+rates = []
 
 for bank in BANKS:
     print("Processing:", bank["name"])
@@ -114,22 +100,21 @@ for bank in BANKS:
     result = extract_with_grok(html, bank["name"])
 
     if result:
-        all_rates.append(result)
+        rates.append(result)
     else:
-        all_rates.append({
+        rates.append({
             "bank": bank["name"],
             "rub_buy": None,
             "rub_sell": None,
             "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
         })
 
-
 final_data = {
     "last_updated": datetime.now().isoformat(),
-    "rates": all_rates
+    "rates": rates
 }
 
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("data.json updated successfully")
+print("Finished successfully")

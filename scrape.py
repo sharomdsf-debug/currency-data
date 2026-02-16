@@ -1,14 +1,7 @@
-import requests
+from playwright.sync_api import sync_playwright
 import json
-import os
 from datetime import datetime
 
-# ================== API КАЛИД ==================
-GROK_API_KEY = os.getenv("GROK_API_KEY")
-if not GROK_API_KEY:
-    raise ValueError("GROK_API_KEY дар GitHub Secrets гузошта нашудааст!")
-
-# ================== БОНКҲО ==================
 BANKS = [
     {"name": "Alif",      "url": "https://alif.tj/ru"},
     {"name": "Humo",      "url": "https://humo.tj/ru/"},
@@ -17,93 +10,49 @@ BANKS = [
     {"name": "Eskhata",   "url": "https://eskhata.com/"},
 ]
 
-# ================== HTML ГИРИФТАН ==================
-def fetch_html(url):
+def scrape_bank(page, bank):
     try:
-        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-        r.raise_for_status()
-        return r.text
-    except Exception as e:
-        print(f"HTML error {url}: {e}")
-        return None
+        page.goto(bank["url"], wait_until="networkidle", timeout=30000)
+        page.wait_for_timeout(5000)  # 5 сония интизор барои JS
 
-# ================== GROK-ро истифода бурда қурб гирифтан ==================
-def extract_with_grok(html, bank_name):
-    if not html:
-        return {"bank": bank_name, "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
+        # Ҷустуҷӯи rates (selector-ҳои умумӣ, агар тағйир ёбад — ислоҳ кун)
+        # Масалан, барои RUB ҷустуҷӯ кун
+        rub_row = page.query_selector('text=/RUB|Рубль/i')  # ё selector-и дақиқтар
+        if rub_row:
+            row = rub_row.evaluate_handle("el => el.closest('tr') or el.closest('div.row')")
+            if row:
+                buy = row.query_selector('text[contains(., "покупка") or contains(., "buy") or contains(., "харид")] ~ td') 
+                sell = row.query_selector('text[contains(., "продажа") or contains(., "sell") or contains(., "фурӯш")] ~ td')
+                rub_buy = buy.inner_text().strip() if buy else None
+                rub_sell = sell.inner_text().strip() if sell else None
 
-    prompt = f"""Ту эксперт ҳастӣ. Аз HTML қурби 1 RUB ба TJS (харид + фурӯш)-ро барор.
-Фақат JSON баргардон:
+                return {
+                    "bank": bank["name"],
+                    "rub_buy": float(rub_buy.replace(',', '.')) if rub_buy else None,
+                    "rub_sell": float(rub_sell.replace(',', '.')) if rub_sell else None,
+                    "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+                }
 
-{{
-  "bank": "{bank_name}",
-  "rub_buy": 0.1200,
-  "rub_sell": 0.1220,
-  "updated": "2026-02-16 22:00"
-}}
-
-HTML:
-{html[:28000]}"""
-
-    try:
-        resp = requests.post(
-            "https://api.x.ai/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {GROK_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "grok-4-1-fast",
-                "messages": [
-                    {"role": "system", "content": "Фақат JSON баргардон. Ҳеҷ чизи дигар нанавис."},
-                    {"role": "user", "content": prompt}
-                ],
-                "temperature": 0.0,
-                "max_tokens": 300
-            },
-            timeout=40
-        )
-
-        if resp.status_code != 200:
-            print(f"API error {resp.status_code} {bank_name}")
-            return None
-
-        content = resp.json()["choices"][0]["message"]["content"].strip()
-
-        # Тоза кардани ```json ва ```
-        if content.startswith("```json"):
-            content = content[7:].strip()
-        elif content.startswith("```"):
-            content = content[3:].strip()
-        if content.endswith("```"):
-            content = content[:-3].strip()
-
-        data = json.loads(content)
-
-        if "updated" not in data:
-            data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
-
-        return data
+        print(f"Rates пайдо нашуд барои {bank['name']}")
+        return {"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
 
     except Exception as e:
-        print(f"Error {bank_name}: {str(e)}")
-        return None
+        print(f"Хато дар {bank['name']}: {str(e)}")
+        return {"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
 
-# ================== АСОСИ КОД ==================
+# ================== MAIN ==================
 rates = []
-for bank in BANKS:
-    print(f"Рафт {bank['name']} ...")
-    html = fetch_html(bank["url"])
-    rate = extract_with_grok(html, bank["name"])
-    if rate:
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+    page = context.new_page()
+
+    for bank in BANKS:
+        print(f"Рафт {bank['name']} ...")
+        rate = scrape_bank(page, bank)
         rates.append(rate)
-    else:
-        rates.append({
-            "bank": bank["name"],
-            "rub_buy": None,
-            "rub_sell": None,
-            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
-        })
+
+    browser.close()
 
 final_data = {
     "last_updated": datetime.now().isoformat(),
@@ -113,4 +62,4 @@ final_data = {
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("✅ Тайёр! data.json нав шуд.")
+print("✅ data.json нав шуд бо Playwright!")

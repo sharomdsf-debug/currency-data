@@ -1,65 +1,89 @@
-from playwright.sync_api import sync_playwright
+import requests
 import json
+import os
 from datetime import datetime
 
+GROK_API_KEY = os.getenv("GROK_API_KEY")
+if not GROK_API_KEY:
+    raise ValueError("GROK_API_KEY дар GitHub Secrets гузошта нашудааст!")
+
+# Рӯйхати бонкҳо
 BANKS = [
-    {"name": "Alif",      "url": "https://alif.tj/ru"},
-    {"name": "Humo",      "url": "https://humo.tj/ru/"},
-    {"name": "DC",        "url": "https://dc.tj/"},
-    {"name": "Imon",      "url": "https://imon.tj/"},
-    {"name": "Eskhata",   "url": "https://eskhata.com/"},
+    "Alif: https://alif.tj/ru",
+    "Humo: https://humo.tj/ru/",
+    "DC: https://dc.tj/",
+    "Imon: https://imon.tj/",
+    "Eskhata: https://eskhata.com/",
 ]
 
-def scrape_bank(page, bank):
+def ask_grok_for_rates():
+    prompt = f"""Қурби 1 RUB ба TJS (харид ва фурӯш)-ро аз ин бонкҳо барор, ҳамон тавр ки қаблан дуруст гуфтӣ:
+
+{BANKS}
+
+Барои ҳар бонк:
+- rub_buy (покупка / харид)
+- rub_sell (продажа / фурӯш)
+- updated (сана/вақт, агар бошад)
+
+Фақат JSON баргардон, мисли ин:
+
+{{
+  "last_updated": "2026-02-16T18:00:00",
+  "rates": [
+    {{"bank": "Alif", "rub_buy": 0.1225, "rub_sell": 0.1249, "updated": "2026-02-16 10:40"}},
+    {{"bank": "Humo", "rub_buy": 0.1219, "rub_sell": 0.1243, "updated": "2026-02-16"}}
+  ]
+}}
+
+Ҳеҷ матни иловагӣ нанавис."""
+
     try:
-        page.goto(bank["url"], wait_until="networkidle", timeout=30000)
-        page.wait_for_timeout(5000)  # 5 сония интизор барои JS
+        resp = requests.post(
+            "https://api.x.ai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {GROK_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "grok-4-1-fast",  # ё "grok-4-latest" агар tier-ат иҷозат диҳад
+                "messages": [
+                    {"role": "system", "content": "Ту фақат JSON бармегардонӣ. Ҳеҷ чизи дигар нанавис."},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.0,
+                "max_tokens": 800
+            },
+            timeout=60
+        )
 
-        # Ҷустуҷӯи rates (selector-ҳои умумӣ, агар тағйир ёбад — ислоҳ кун)
-        # Масалан, барои RUB ҷустуҷӯ кун
-        rub_row = page.query_selector('text=/RUB|Рубль/i')  # ё selector-и дақиқтар
-        if rub_row:
-            row = rub_row.evaluate_handle("el => el.closest('tr') or el.closest('div.row')")
-            if row:
-                buy = row.query_selector('text[contains(., "покупка") or contains(., "buy") or contains(., "харид")] ~ td') 
-                sell = row.query_selector('text[contains(., "продажа") or contains(., "sell") or contains(., "фурӯш")] ~ td')
-                rub_buy = buy.inner_text().strip() if buy else None
-                rub_sell = sell.inner_text().strip() if sell else None
+        if resp.status_code != 200:
+            print(f"API хато: {resp.status_code} - {resp.text}")
+            return {"last_updated": datetime.now().isoformat(), "rates": []}
 
-                return {
-                    "bank": bank["name"],
-                    "rub_buy": float(rub_buy.replace(',', '.')) if rub_buy else None,
-                    "rub_sell": float(rub_sell.replace(',', '.')) if rub_sell else None,
-                    "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
-                }
+        content = resp.json()["choices"][0]["message"]["content"].strip()
 
-        print(f"Rates пайдо нашуд барои {bank['name']}")
-        return {"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
+        # Тоза кардани ```json
+        if content.startswith("```json"):
+            content = content[7:].strip()
+        if content.startswith("```"):
+            content = content[3:].strip()
+        if content.endswith("```"):
+            content = content[:-3].strip()
+
+        data = json.loads(content)
+
+        print("Grok ҷавоб дод:", data)
+        return data
 
     except Exception as e:
-        print(f"Хато дар {bank['name']}: {str(e)}")
-        return {"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
+        print(f"Хато дар API: {str(e)}")
+        return {"last_updated": datetime.now().isoformat(), "rates": []}
 
-# ================== MAIN ==================
-rates = []
-with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True)
-    context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-    page = context.new_page()
-
-    for bank in BANKS:
-        print(f"Рафт {bank['name']} ...")
-        rate = scrape_bank(page, bank)
-        rates.append(rate)
-
-    browser.close()
-
-final_data = {
-    "last_updated": datetime.now().isoformat(),
-    "rates": rates
-}
+# ================== ИҶРОИ АСОСӢ ==================
+data = ask_grok_for_rates()
 
 with open("data.json", "w", encoding="utf-8") as f:
-    json.dump(final_data, f, ensure_ascii=False, indent=2)
+    json.dump(data, f, ensure_ascii=False, indent=2)
 
-print("✅ data.json нав шуд бо Playwright!")
+print("✅ data.json аз Grok нав шуд!")

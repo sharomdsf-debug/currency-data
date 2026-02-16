@@ -1,38 +1,39 @@
+import requests
 import json
 import os
 from datetime import datetime
 
-# ================== КАЛИД ==================
+# ================== API КАЛИД ==================
 GROK_API_KEY = os.getenv("GROK_API_KEY")
 if not GROK_API_KEY:
     raise ValueError("GROK_API_KEY дар GitHub Secrets гузошта нашудааст!")
 
-# ================== РӮЙХАТИ БОНКҲО ==================
+# ================== БОНКҲО ==================
 BANKS = [
     {"name": "Alif",      "url": "https://alif.tj/ru"},
     {"name": "Humo",      "url": "https://humo.tj/ru/"},
     {"name": "DC",        "url": "https://dc.tj/"},
     {"name": "Imon",      "url": "https://imon.tj/"},
     {"name": "Eskhata",   "url": "https://eskhata.com/"},
-    # Агар бонкҳои дигар хоҳӣ, ҳамин ҷо илова кун
 ]
 
-# ================== ФУНКЦИЯҲО ==================
+# ================== HTML ГИРИФТАН ==================
 def fetch_html(url):
     try:
         r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
         r.raise_for_status()
         return r.text
     except Exception as e:
-        print(f"HTML гирифтан нашуд {url}: {e}")
+        print(f"HTML error {url}: {e}")
         return None
 
+# ================== GROK-ро истифода бурда қурб гирифтан ==================
 def extract_with_grok(html, bank_name):
     if not html:
         return {"bank": bank_name, "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
 
-    prompt = f"""Ту эксперт ҳастӣ. Аз HTML-и бонки {bank_name} қурби 1 RUB ба TJS-ро барор (харид ва фурӯш).
-Фақат JSON баргардон, ҳеҷ матни дигар набошад:
+    prompt = f"""Ту эксперт ҳастӣ. Аз HTML қурби 1 RUB ба TJS (харид + фурӯш)-ро барор.
+Фақат JSON баргардон:
 
 {{
   "bank": "{bank_name}",
@@ -54,7 +55,7 @@ HTML:
             json={
                 "model": "grok-4-1-fast",
                 "messages": [
-                    {"role": "system", "content": "Ту фақат JSON бармегардонӣ. Ҳеҷ матни иловагӣ набошад."},
+                    {"role": "system", "content": "Фақат JSON баргардон. Ҳеҷ чизи дигар нанавис."},
                     {"role": "user", "content": prompt}
                 ],
                 "temperature": 0.0,
@@ -64,19 +65,17 @@ HTML:
         )
 
         if resp.status_code != 200:
-            print(f"API хато {resp.status_code} барои {bank_name}")
+            print(f"API error {resp.status_code} {bank_name}")
             return None
 
         content = resp.json()["choices"][0]["message"]["content"].strip()
 
-        # Тоза кардани 
-json ва ```
-        if content.startswith("
+        # Тоза кардани ```json ва ```
+        if content.startswith("```json"):
             content = content[7:].strip()
-        if content.startswith("
-"):
+        elif content.startswith("```"):
             content = content[3:].strip()
-        if content.endswith("
+        if content.endswith("```"):
             content = content[:-3].strip()
 
         data = json.loads(content)
@@ -87,16 +86,15 @@ json ва ```
         return data
 
     except Exception as e:
-        print(f"Хато дар {bank_name}: {str(e)}")
+        print(f"Error {bank_name}: {str(e)}")
         return None
 
 # ================== АСОСИ КОД ==================
 rates = []
 for bank in BANKS:
-    print(f"🔄 {bank['name']} - кор мекунад...")
+    print(f"Рафт {bank['name']} ...")
     html = fetch_html(bank["url"])
     rate = extract_with_grok(html, bank["name"])
-    
     if rate:
         rates.append(rate)
     else:
@@ -115,4 +113,4 @@ final_data = {
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("✅ data.json комилан нав шуд!")
+print("✅ Тайёр! data.json нав шуд.")

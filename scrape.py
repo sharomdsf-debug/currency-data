@@ -3,34 +3,61 @@ import json
 import os
 from datetime import datetime
 
+# ==============================
+# API KEY
+# ==============================
 GROK_API_KEY = os.getenv("GROK_API_KEY")
 if not GROK_API_KEY:
-    raise ValueError("GROK_API_KEY not set in GitHub Secrets!")
+    raise ValueError("❌ GROK_API_KEY not found in GitHub Secrets!")
 
+# ==============================
+# BANK LIST
+# ==============================
 BANKS = [
-    {"name": "Alif",      "url": "https://alif.tj/ru"},
-    {"name": "Humo",      "url": "https://humo.tj/ru/"},
-    {"name": "DC",        "url": "https://dc.tj/"},
-    {"name": "Imon",      "url": "https://imon.tj/"},
-    {"name": "Eskhata",   "url": "https://eskhata.com/"},
-    # Агар бонкҳои дигар хоҳӣ, ин ҷо илова кун
+    {"name": "Alif", "url": "https://alif.tj/ru"},
+    {"name": "Humo", "url": "https://humo.tj/ru/"},
+    {"name": "Dushanbe City", "url": "https://dc.tj/"},
+    {"name": "Imon", "url": "https://imon.tj/"},
+    {"name": "Eskhata", "url": "https://eskhata.com/"}
 ]
 
+# ==============================
+# FETCH HTML
+# ==============================
 def fetch_html(url):
     try:
-        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-        r.raise_for_status()
-        return r.text
-    except:
+        response = requests.get(
+            url,
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=20
+        )
+        response.raise_for_status()
+        return response.text
+    except Exception as e:
+        print(f"❌ Error fetching {url}: {e}")
         return None
 
+
+# ==============================
+# GROK EXTRACTION
+# ==============================
 def extract_with_grok(html, bank_name):
     if not html:
-        return {"bank": bank_name, "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
+        return {
+            "bank": bank_name,
+            "rub_buy": None,
+            "rub_sell": None,
+            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
 
-    prompt = f"""Ту эксперт ҳастӣ. Аз HTML-и бонки {bank_name} қурби 1 RUB ба TJS-ро барор.
+    html_part = html[:25000]
+
+    prompt = f"""
+Ту эксперт ҳастӣ. Аз HTML-и бонки {bank_name} қурби 1 RUB ба TJS-ро барор.
 Калимаҳо: RUB, Рубль, покупка, продажа, харид, фурӯш, buy, sell.
-Фақат JSON баргардон, ҳеҷ матни дигар набошад:
+Фақат JSON баргардон, ҳеҷ матни дигар набошад.
+
+Формат:
 
 {{
   "bank": "{bank_name}",
@@ -40,10 +67,11 @@ def extract_with_grok(html, bank_name):
 }}
 
 HTML:
-{html[:28000]}"""
+{html_part}
+"""
 
     try:
-        resp = requests.post(
+        response = requests.post(
             "https://api.x.ai/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {GROK_API_KEY}",
@@ -52,51 +80,69 @@ HTML:
             json={
                 "model": "grok-4-1-fast",
                 "messages": [
-                    {"role": "system", "content": "Ту фақат JSON бармегардонӣ. Ҳеҷ матни дигар набошад."},
+                    {"role": "system", "content": "Фақат JSON баргардон. Ягон матни дигар набошад."},
                     {"role": "user", "content": prompt}
                 ],
                 "temperature": 0,
                 "max_tokens": 300
             },
-            timeout=30
+            timeout=40
         )
 
-        if resp.status_code != 200:
-            print(f"API error for {bank_name}: {resp.text}")
+        if response.status_code != 200:
+            print(f"❌ API Error {bank_name}: {response.text}")
             return None
 
-        content = resp.json()["choices"][0]["message"]["content"].strip()
+        content = response.json()["choices"][0]["message"]["content"].strip()
+
         # Агар
         if "
 " in content:
-            content = content.split("`json")[-1].split("```")[0].strip()
+            content = content.split("`")[-2].strip()
 
         data = json.loads(content)
+
         if "updated" not in data:
             data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+
         return data
 
     except Exception as e:
-        print(f"Error {bank_name}: {e}")
+        print(f"❌ Grok parsing error ({bank_name}): {e}")
         return None
 
-# ===================== MAIN =====================
-rates = []
-for bank in BANKS:
-    print(f"🔄 {bank['name']} ...")
-    html = fetch_html(bank["url"])
-    rate = extract_with_grok(html, bank["name"])
-    if rate:
-        rates.append(rate)
-    else:
-        rates.append({"bank": bank["name"], "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")})
 
-final_data = {
-    "last_updated": datetime.now().isoformat(),
-    "rates": rates
-}
+# ==============================
+# MAIN
+# ==============================
+def main():
+    rates = []
 
-with open("data.json", "w", encoding="utf-8") as f:
-    json.dump(final_data, f, ensure_ascii=False, indent=2)
+    for bank in BANKS:
+        print(f"🔄 Checking {bank['name']}...")
+        html = fetch_html(bank["url"])
+        result = extract_with_grok(html, bank["name"])
 
-print("✅ data.json нав шуд!")
+        if result:
+            rates.append(result)
+        else:
+            rates.append({
+                "bank": bank["name"],
+                "rub_buy": None,
+                "rub_sell": None,
+                "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+            })
+
+    final_data = {
+        "last_updated": datetime.now().isoformat(),
+        "rates": rates
+    }
+
+    with open("data.json", "w", encoding="utf-8") as f:
+        json.dump(final_data, f, ensure_ascii=False, indent=2)
+
+    print("✅ data.json successfully updated!")
+
+
+if name == "main":
+    main()

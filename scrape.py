@@ -18,11 +18,7 @@ BANKS = [
 
 def fetch_html(url):
     try:
-        r = requests.get(
-            url,
-            headers={"User-Agent": "Mozilla/5.0"},
-            timeout=20
-        )
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
         r.raise_for_status()
         return r.text
     except Exception as e:
@@ -30,43 +26,22 @@ def fetch_html(url):
         return None
 
 
-def clean_grok_response(content):
-    content = content.strip()
-
-    # Агар
-    if content.startswith("
-"):
-        content = content.replace("
-        content = content.replace("
-", "")
-        content = content.strip()
-
-    return content
-
-
 def extract_with_grok(html, bank_name):
     if not html:
-        return {
-            "bank": bank_name,
-            "rub_buy": None,
-            "rub_sell": None,
-            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
-        }
+        return None
 
     prompt = f"""
 Аз HTML қурби 1 RUB ба TJS-ро ёб.
-Калимаҳо: RUB, покупка, продажа, харид, фурӯш, buy, sell.
 Фақат JSON баргардон.
 
 {{
   "bank": "{bank_name}",
   "rub_buy": 0.12,
-  "rub_sell": 0.13,
-  "updated": "2026-01-01 12:00"
+  "rub_sell": 0.13
 }}
 
 HTML:
-{html[:20000]}
+{html[:15000]}
 """
 
     try:
@@ -92,13 +67,18 @@ HTML:
             print("API error:", response.text)
             return None
 
-        content = response.json()["choices"][0]["message"]["content"]
-        content = clean_grok_response(content)
+        content = response.json()["choices"][0]["message"]["content"].strip()
+
+        # Агар
+        if content.startswith("
+"):
+            content = content.replace("
+            content = content.replace("
+", "")
+            content = content.strip()
 
         data = json.loads(content)
-
-        if "updated" not in data:
-            data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         return data
 
@@ -106,8 +86,6 @@ HTML:
         print("Parsing error:", e)
         return None
 
-
-# ================= MAIN =================
 
 all_rates = []
 
@@ -134,4 +112,4 @@ final_data = {
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("data.json updated successfully")
+print("Done")

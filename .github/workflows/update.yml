@@ -1,36 +1,43 @@
-name: Update Rates with Grok + Playwright
+name: Update Currency Rates with Playwright
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # ҳар 6 соат
-  workflow_dispatch:
+    - cron: '0 */6 * * *'   # ҳар 6 соат (4 маротиба дар рӯз)
+  workflow_dispatch:        # дастӣ запуск кардан
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 10     # job-ро 10 дақиқа иҷозат медиҳад (кофӣ аст)
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install Playwright and dependencies
+      - name: Install dependencies
         run: |
-          pip install requests playwright
-          playwright install --with-deps chromium
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 playwright
 
-      - name: Run Scraper
-        env:
-          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium
+
+      - name: Run scraper script
         run: python scrape.py
 
-      - name: Commit & Push
+      - name: Commit and push changes if any
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --staged --quiet || git commit -m "Auto update rates from Grok + Playwright $(date +'%Y-%m-%d %H:%M')"
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🔄 Автоматӣ навсозӣ қурби асъорҳо - $(date +'%Y-%m-%d %H:%M')"
+            git push
+          fi

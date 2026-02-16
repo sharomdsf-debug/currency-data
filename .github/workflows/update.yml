@@ -1,30 +1,38 @@
-name: Auto Update Rates
+name: Update Currency Rates with Grok
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
-  workflow_dispatch:
+    - cron: '0 */6 * * *'     # ҳар 6 соат (4 маротиба дар рӯз)
+  workflow_dispatch:          # дастӣ пахш кардан
 
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.12'
 
-      - run: |
-          pip install playwright
-          playwright install --with-deps
+      - name: Install dependencies
+        run: pip install requests
 
-      - run: python scrape.py
+      - name: Run Grok Scraper
+        env:
+          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
+        run: python scrape.py
 
-      - run: |
-          git config --global user.name "bot"
-          git config --global user.email "bot@users.noreply.github.com"
+      - name: Commit & Push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git commit -m "auto update" || echo "no changes"
-          git push origin HEAD
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🔄 Auto update currency rates - $(date +'%Y-%m-%d %H:%M')"
+            git push
+          fi

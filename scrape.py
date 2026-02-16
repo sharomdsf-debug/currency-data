@@ -1,51 +1,25 @@
-import requests
-import json
-import os
-from datetime import datetime
-
-GROK_API_KEY = os.getenv("GROK_API_KEY")
-
-if not GROK_API_KEY:
-    raise ValueError("GROK_API_KEY not found")
-
-BANKS = [
-    {"name": "Alif", "url": "https://alif.tj/ru"},
-    {"name": "Humo", "url": "https://humo.tj/ru/"},
-    {"name": "Dushanbe City", "url": "https://dc.tj/"},
-    {"name": "Imon", "url": "https://imon.tj/"},
-    {"name": "Eskhata", "url": "https://eskhata.com/"}
-]
-
-def fetch_html(url):
-    try:
-        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
-        r.raise_for_status()
-        return r.text
-    except Exception as e:
-        print("Fetch error:", e)
-        return None
-
-
 def extract_with_grok(html, bank_name):
     if not html:
-        return None
+        return {"bank": bank_name, "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
 
-    prompt = f"""
-Аз HTML қурби 1 RUB ба TJS-ро ёб.
-Фақат JSON баргардон.
+    prompt = f"""Ту эксперт ҳастӣ дар қурби асъорҳои бонкҳои Тоҷикистон.
+Аз ин HTML қурби 1 RUB ба TJS-ро барор (ҳатман харид ва фурӯш).
+Калимаҳо барои ҷустуҷӯ: RUB, рубль, покупка, продажа, харид, фурӯш, buy, sell, курс.
+
+Фақат JSON баргардон, ҳеҷ матни дигар набошад ва ҳеҷ кавычкаи иловагӣ нагузор:
 
 {{
   "bank": "{bank_name}",
-  "rub_buy": 0.12,
-  "rub_sell": 0.13
+  "rub_buy": 0.1200,
+  "rub_sell": 0.1220,
+  "updated": "2026-02-16 21:00"
 }}
 
-HTML:
-{html[:15000]}
-"""
+HTML (бо ҳама чиз):
+{html[:28000]}"""
 
     try:
-        response = requests.post(
+        resp = requests.post(
             "https://api.x.ai/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {GROK_API_KEY}",
@@ -54,62 +28,48 @@ HTML:
             json={
                 "model": "grok-4-1-fast",
                 "messages": [
-                    {"role": "system", "content": "Фақат JSON баргардон."},
+                    {"role": "system", "content": "Ту фақат JSON чист бармегардонӣ. Ҳеҷ матни иловагӣ набошад."},
                     {"role": "user", "content": prompt}
                 ],
-                "temperature": 0,
+                "temperature": 0.0,
                 "max_tokens": 300
             },
             timeout=40
         )
 
-        if response.status_code != 200:
-            print("API error:", response.text)
-            return None
+        if resp.status_code != 200:
+            print(f"API error {resp.status_code} for {bank_name}: {resp.text[:200]}")
+            return {"bank": bank_name, "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
 
-        content = response.json()["choices"][0]["message"]["content"].strip()
+        raw_content = resp.json()["choices"][0]["message"]["content"].strip()
 
-        # Агар
-        if content.startswith("
+        # Тоза кардани
+        if raw_content.startswith("
+json"):
+            raw_content = raw_content[7:].strip()  # 7 ҳарф барои
+        if raw_content.startswith("
 "):
-            content = content.replace("
-            content = content.replace("
-", "")
-            content = content.strip()
+            raw_content = raw_content[3:].strip()
+        if raw_content.endswith("
+            raw_content = raw_content[:-3].strip()
 
-        data = json.loads(content)
-        data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        # Агар ҳанӯз 
+бошад, нест кун
+        raw_content = raw_content.replace("`", "").strip()
+
+        try:
+            data = json.loads(raw_content)
+        except json.JSONDecodeError as json_err:
+            print(f"JSON decode error for {bank_name}: {json_err}")
+            print("Raw content was:", raw_content[:300])
+            return {"bank": bank_name, "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}
+
+        # Агар updated набошад, илова кун
+        if "updated" not in data:
+            data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         return data
 
     except Exception as e:
-        print("Parsing error:", e)
-        return None
-
-
-all_rates = []
-
-for bank in BANKS:
-    print("Processing:", bank["name"])
-    html = fetch_html(bank["url"])
-    result = extract_with_grok(html, bank["name"])
-
-    if result:
-        all_rates.append(result)
-    else:
-        all_rates.append({
-            "bank": bank["name"],
-            "rub_buy": None,
-            "rub_sell": None,
-            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
-        })
-
-final_data = {
-    "last_updated": datetime.now().isoformat(),
-    "rates": all_rates
-}
-
-with open("data.json", "w", encoding="utf-8") as f:
-    json.dump(final_data, f, ensure_ascii=False, indent=2)
-
-print("Done")
+        print(f"General error for {bank_name}: {str(e)}")
+        return {"bank": bank_name, "rub_buy": None, "rub_sell": None, "updated": datetime.now().strftime("%Y-%m-%d %H:%M")}

@@ -6,7 +6,7 @@ from datetime import datetime
 GROK_API_KEY = os.getenv("GROK_API_KEY")
 
 if not GROK_API_KEY:
-    raise ValueError("GROK_API_KEY not set")
+    raise ValueError("GROK_API_KEY not found")
 
 BANKS = [
     {"name": "Alif", "url": "https://alif.tj/ru"},
@@ -15,7 +15,6 @@ BANKS = [
     {"name": "Imon", "url": "https://imon.tj/"},
     {"name": "Eskhata", "url": "https://eskhata.com/"}
 ]
-
 
 def fetch_html(url):
     try:
@@ -26,29 +25,25 @@ def fetch_html(url):
         print("Fetch error:", e)
         return None
 
-
-def clean_json_block(text):
-    text = text.strip()
-    if text.startswith("
-        text = text.replace("
-json", "")
-        text = text.replace("`", "")
-    return text.strip()
-
-
 def extract_with_grok(html, bank_name):
     if not html:
-        return None
+        return {
+            "bank": bank_name,
+            "rub_buy": None,
+            "rub_sell": None,
+            "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
 
     prompt = f"""
-Аз HTML қурби 1 RUB ба TJS-ро барор.
-Фақат JSON баргардон.
-Формат:
+Аз HTML қурби 1 RUB ба TJS-ро ёб.
+Калимаҳо: RUB, покупка, продажа, харид, фурӯш, buy, sell.
+Фақат JSON баргардон:
 
 {{
   "bank": "{bank_name}",
   "rub_buy": 0.12,
-  "rub_sell": 0.13
+  "rub_sell": 0.13,
+  "updated": "2026-01-01 12:00"
 }}
 
 HTML:
@@ -68,7 +63,8 @@ HTML:
                     {"role": "system", "content": "Фақат JSON баргардон."},
                     {"role": "user", "content": prompt}
                 ],
-                "temperature": 0
+                "temperature": 0,
+                "max_tokens": 300
             },
             timeout=40
         )
@@ -77,11 +73,16 @@ HTML:
             print("API error:", response.text)
             return None
 
-        content = response.json()["choices"][0]["message"]["content"]
-        content = clean_json_block(content)
+        content = response.json()["choices"][0]["message"]["content"].strip()
+
+        if content.startswith("
+            content = content.replace("
+json", "").replace("`", "").strip()
 
         data = json.loads(content)
-        data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        if "updated" not in data:
+            data["updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         return data
 
@@ -89,10 +90,7 @@ HTML:
         print("Parsing error:", e)
         return None
 
-
-# ================= MAIN =================
-
-rates = []
+all_rates = []
 
 for bank in BANKS:
     print("Processing:", bank["name"])
@@ -100,9 +98,9 @@ for bank in BANKS:
     result = extract_with_grok(html, bank["name"])
 
     if result:
-        rates.append(result)
+        all_rates.append(result)
     else:
-        rates.append({
+        all_rates.append({
             "bank": bank["name"],
             "rub_buy": None,
             "rub_sell": None,
@@ -111,10 +109,10 @@ for bank in BANKS:
 
 final_data = {
     "last_updated": datetime.now().isoformat(),
-    "rates": rates
+    "rates": all_rates
 }
 
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("Finished successfully")
+print("data.json updated")

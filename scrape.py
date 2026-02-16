@@ -6,7 +6,7 @@ from datetime import datetime
 GROK_API_KEY = os.getenv("GROK_API_KEY")
 
 if not GROK_API_KEY:
-    raise ValueError("GROK_API_KEY is not set in GitHub Secrets")
+    raise ValueError("GROK_API_KEY not found in environment variables")
 
 BANKS = [
     {"name": "Alif", "url": "https://alif.tj/ru"},
@@ -15,6 +15,7 @@ BANKS = [
     {"name": "Imon", "url": "https://imon.tj/"},
     {"name": "Eskhata", "url": "https://eskhata.com/"}
 ]
+
 
 def fetch_html(url):
     try:
@@ -26,7 +27,7 @@ def fetch_html(url):
         response.raise_for_status()
         return response.text
     except Exception as e:
-        print(f"HTML fetch error: {e}")
+        print("Fetch error:", e)
         return None
 
 
@@ -39,35 +40,37 @@ def extract_with_grok(html, bank_name):
             "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
         }
 
-    prompt = f"""
-Аз HTML-и бонки {bank_name} қурби 1 RUB ба TJS-ро ёб.
-Ҳам харид (buy, покупка) ва ҳам фурӯш (sell, продажа).
-Фақат JSON баргардон, ҳеҷ матни дигар набошад.
-
-Формат:
-{{
-  "bank": "{bank_name}",
-  "rub_buy": 0.12,
-  "rub_sell": 0.13,
-  "updated": "2026-02-16 21:00"
-}}
-
-HTML:
-{html[:25000]}
-"""
+    prompt = (
+        "Аз HTML-и зер қурби 1 RUB ба TJS-ро барор.\n"
+        "Калимаҳои муҳим: RUB, Рубль, покупка, продажа, харид, фурӯш, buy, sell.\n"
+        "Фақат JSON баргардон, ҳеҷ матни дигар нанавис.\n\n"
+        "{\n"
+        '  "bank": "' + bank_name + '",\n'
+        '  "rub_buy": 0.12,\n'
+        '  "rub_sell": 0.13,\n'
+        '  "updated": "2026-01-01 12:00"\n'
+        "}\n\n"
+        "HTML:\n" + html[:25000]
+    )
 
     try:
         response = requests.post(
             "https://api.x.ai/v1/chat/completions",
             headers={
-                "Authorization": f"Bearer {GROK_API_KEY}",
+                "Authorization": "Bearer " + GROK_API_KEY,
                 "Content-Type": "application/json"
             },
             json={
                 "model": "grok-4-1-fast",
                 "messages": [
-                    {"role": "system", "content": "Ту танҳо JSON бармегардонӣ."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "Ту фақат JSON бармегардонӣ. Ҳеҷ матни дигар набошад."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
                 ],
                 "temperature": 0,
                 "max_tokens": 300
@@ -76,7 +79,7 @@ HTML:
         )
 
         if response.status_code != 200:
-            print(f"API error {bank_name}: {response.text}")
+            print("API error:", response.text)
             return None
 
         content = response.json()["choices"][0]["message"]["content"].strip()
@@ -97,35 +100,36 @@ HTML:
         return data
 
     except Exception as e:
-        print(f"Grok parsing error ({bank_name}): {e}")
+        print("Grok parsing error:", e)
         return None
 
 
 # ================= MAIN =================
 
-results = []
+all_rates = []
 
 for bank in BANKS:
-    print(f"Processing {bank['name']}")
+    print("Processing:", bank["name"])
     html = fetch_html(bank["url"])
-    rate = extract_with_grok(html, bank["name"])
+    result = extract_with_grok(html, bank["name"])
 
-    if rate:
-        results.append(rate)
+    if result:
+        all_rates.append(result)
     else:
-        results.append({
+        all_rates.append({
             "bank": bank["name"],
             "rub_buy": None,
             "rub_sell": None,
             "updated": datetime.now().strftime("%Y-%m-%d %H:%M")
         })
 
+
 final_data = {
     "last_updated": datetime.now().isoformat(),
-    "rates": results
+    "rates": all_rates
 }
 
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-print("Done")
+print("data.json updated successfully")

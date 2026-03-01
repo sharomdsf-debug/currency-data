@@ -1,35 +1,35 @@
 {
-  "last_updated": "2026-03-01T08:30:07.244934",
+  "last_updated": "2026-03-01T12:44:54.619164",
   "rates": [
     {
       "bank": "Alif",
       "rub_buy": null,
       "rub_sell": null,
-      "updated": "2026-03-01 08:29"
+      "updated": "2026-03-01 12:44"
     },
     {
       "bank": "Humo",
       "rub_buy": null,
       "rub_sell": null,
-      "updated": "2026-03-01 08:29"
+      "updated": "2026-03-01 12:44"
     },
     {
       "bank": "DC",
       "rub_buy": null,
       "rub_sell": null,
-      "updated": "2026-03-01 08:30"
+      "updated": "2026-03-01 12:44"
     },
     {
       "bank": "Imon",
       "rub_buy": null,
       "rub_sell": null,
-      "updated": "2026-03-01 08:30"
+      "updated": "2026-03-01 12:44"
     },
     {
       "bank": "Eskhata",
       "rub_buy": null,
       "rub_sell": null,
-      "updated": "2026-03-01 08:30"
+      "updated": "2026-03-01 12:44"
     }
   ]
 }

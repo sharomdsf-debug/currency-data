@@ -1,35 +1,37 @@
 {
-  "last_updated": "2026-03-07T12:47:19.870555",
-  "rates": [
+  "updated": "07.03.2026 08:30",
+  "banks": [
     {
-      "bank": "Alif",
-      "rub_buy": null,
-      "rub_sell": null,
-      "updated": "2026-03-07 12:44"
+      "bank": "Бонки миллии Тоҷикистон (НБТ)",
+      "sell": "0.1233"
     },
     {
-      "bank": "Humo",
-      "rub_buy": null,
-      "rub_sell": null,
-      "updated": "2026-03-07 12:44"
+      "bank": "Амонатбонк",
+      "sell": "0.1245"
     },
     {
-      "bank": "DC",
-      "rub_buy": null,
-      "rub_sell": null,
-      "updated": "2026-03-07 12:45"
+      "bank": "Алиф Банк",
+      "sell": "0.1247"
     },
     {
-      "bank": "Imon",
-      "rub_buy": null,
-      "rub_sell": null,
-      "updated": "2026-03-07 12:46"
+      "bank": "Банк Эсхата",
+      "sell": "0.1246"
     },
     {
-      "bank": "Eskhata",
-      "rub_buy": null,
-      "rub_sell": null,
-      "updated": "2026-03-07 12:47"
+      "bank": "Душанбе Сити",
+      "sell": "0.1204"
+    },
+    {
+      "bank": "Спитамен Банк",
+      "sell": "0.1204"
+    },
+    {
+      "bank": "Международный банк Таджикистана",
+      "sell": "0.1173"
+    },
+    {
+      "bank": "Хумо",
+      "sell": "0.1225"
     }
   ]
 }

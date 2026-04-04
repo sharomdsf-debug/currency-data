@@ -1,42 +1,74 @@
 {
-  "updated": "🔹 4.04.2026 7:30",
-  "banks": [
+  "project_name": "ASOR TJ",
+  "last_updated": "2026-04-04T18:10:00Z",
+  "base_currency": "TJS",
+  "status": "success",
+  "rates": [
     {
-      "bank": "Бонки миллии Тоҷикистон",
-      "sell": "0.1189"
+      "bank_name": "Бонки Миллии Тоҷикистон",
+      "bank_id": "nbt",
+      "website": "https://nbt.tj",
+      "currencies": {
+        "USD": { "buy": "10.8900", "sell": "10.8900" },
+        "EUR": { "buy": "11.7500", "sell": "11.7500" },
+        "RUB": { "buy": "0.1180", "sell": "0.1180" },
+        "CNY": { "buy": "1.5050", "sell": "1.5050" }
+      }
     },
     {
-      "bank": "Амонатбонк",
-      "sell": "0.1160"
+      "bank_name": "Амонатбонк",
+      "bank_id": "amonatbonk",
+      "website": "https://amonatbonk.tj",
+      "currencies": {
+        "USD": { "buy": "10.9100", "sell": "10.9600" },
+        "EUR": { "buy": "11.7100", "sell": "11.8800" },
+        "RUB": { "buy": "0.1178", "sell": "0.1192" },
+        "CNY": { "buy": "1.4900", "sell": "1.5200" }
+      }
     },
     {
-      "bank": "Алиф Банк",
-      "sell": "0.1207"
+      "bank_name": "Бонки Эсхата",
+      "bank_id": "eskhata",
+      "website": "https://eskhata.com",
+      "currencies": {
+        "USD": { "buy": "10.9200", "sell": "10.9600" },
+        "EUR": { "buy": "11.7000", "sell": "11.8500" },
+        "RUB": { "buy": "0.1175", "sell": "0.1195" },
+        "CNY": { "buy": "1.4850", "sell": "1.5300" }
+      }
     },
     {
-      "bank": "Банк Эсхата",
-      "sell": "0.1160"
+      "bank_name": "Саноатсодиротбонк",
+      "bank_id": "ssb",
+      "website": "https://ssb.tj",
+      "currencies": {
+        "USD": { "buy": "10.9200", "sell": "10.9500" },
+        "EUR": { "buy": "11.7200", "sell": "11.8600" },
+        "RUB": { "buy": "0.1181", "sell": "0.1194" },
+        "CNY": { "buy": "1.4950", "sell": "1.5250" }
+      }
     },
     {
-      "bank": "Душанбе Сити",
-      "sell": "0.1168"
+      "bank_name": "Алиф Бонк",
+      "bank_id": "alif",
+      "website": "https://alif.tj",
+      "currencies": {
+        "USD": { "buy": "10.9300", "sell": "10.9600" },
+        "EUR": { "buy": "11.7500", "sell": "11.9500" },
+        "RUB": { "buy": "0.1185", "sell": "0.1198" },
+        "CNY": { "buy": "1.5000", "sell": "1.5400" }
+      }
     },
     {
-      "bank": "Спитамен Банк",
-      "sell": "0.1172"
-    },
-    {
-      "bank": "Международный банк Таджикистана",
-      "sell": "0.1173"
-    },
-    {
-      "bank": "Хумо",
-      "sell": "0.1185"
-    },
-    {
-      "bank": "Ориёнбонк",
-      "sell": "0.1205"
+      "bank_name": "Ҳумо",
+      "bank_id": "humo",
+      "website": "https://humo.tj",
+      "currencies": {
+        "USD": { "buy": "10.9300", "sell": "10.9600" },
+        "EUR": { "buy": "11.7500", "sell": "11.9000" },
+        "RUB": { "buy": "0.1182", "sell": "0.1195" },
+        "CNY": { "buy": "1.4900", "sell": "1.5350" }
+      }
     }
-    
   ]
 }

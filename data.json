@@ -5,7 +5,7 @@
   "status": "success",
   "rates": [
     {
-      "bank_name": "Бонки Миллии Тоҷикистон",
+      "bank_name": "МБТ",
       "bank_id": "nbt",
       "website": "https://nbt.tj",
       "currencies": {

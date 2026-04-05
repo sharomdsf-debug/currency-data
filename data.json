@@ -9,10 +9,10 @@
       "bank_id": "nbt",
       "website": "https://nbt.tj",
       "currencies": {
-        "USD": { "buy": "9.5738" },
-        "EUR": { "buy": "11.0520" },
-        "RUB": { "buy": "0.1200" },
-        "CNY": { "buy": "1.3908" }
+        "USD": { "buy": "9.5738", "sell": "9.5738" },
+        "EUR": { "buy": "11.0520", "sell": "11.0520" },
+        "RUB": { "buy": "0.1200", "sell": "0.1200" },
+        "CNY": { "buy": "1.3908", "sell": "1.3908" }
       }
     },
     {
@@ -20,10 +20,10 @@
       "bank_id": "amonatbonk",
       "website": "https://amonatbonk.tj",
       "currencies": {
-        "USD": { "buy": "9.5200" },
-        "EUR": { "buy": "10.9500" },
-        "RUB": { "buy": "0.1184" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5200", "sell": "9.6100" },
+        "EUR": { "buy": "10.9500", "sell": "11.1500" },
+        "RUB": { "buy": "0.1184", "sell": "0.1205" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -31,10 +31,10 @@
       "bank_id": "eskhata",
       "website": "https://eskhata.com",
       "currencies": {
-        "USD": { "buy": "9.5000" },
-        "EUR": { "buy": "10.9300" },
-        "RUB": { "buy": "0.1194" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5000", "sell": "9.6000" },
+        "EUR": { "buy": "10.9300", "sell": "11.1500" },
+        "RUB": { "buy": "0.1194", "sell": "0.1217" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -42,10 +42,10 @@
       "bank_id": "ssb",
       "website": "https://ssb.tj",
       "currencies": {
-        "USD": { "buy": "9.5400" },
-        "EUR": { "buy": "10.9500" },
-        "RUB": { "buy": "0.1194" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5400", "sell": "9.6300" },
+        "EUR": { "buy": "10.9500", "sell": "11.1500" },
+        "RUB": { "buy": "0.1194", "sell": "0.1217" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -53,10 +53,10 @@
       "bank_id": "alif",
       "website": "https://alif.tj",
       "currencies": {
-        "USD": { "buy": "9.5000" },
-        "EUR": { "buy": "10.9400" },
-        "RUB": { "buy": "0.1194" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5000", "sell": "9.6000" },
+        "EUR": { "buy": "10.9400", "sell": "11.1500" },
+        "RUB": { "buy": "0.1194", "sell": "0.1217" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -64,10 +64,10 @@
       "bank_id": "humo",
       "website": "https://humo.tj",
       "currencies": {
-        "USD": { "buy": "9.5000" },
-        "EUR": { "buy": "10.9300" },
-        "RUB": { "buy": "0.1194" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5000", "sell": "9.6000" },
+        "EUR": { "buy": "10.9300", "sell": "11.1500" },
+        "RUB": { "buy": "0.1194", "sell": "0.1217" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -75,10 +75,10 @@
       "bank_id": "oriyonbank",
       "website": "https://oriyonbank.tj",
       "currencies": {
-        "USD": { "buy": "9.5100" },
-        "EUR": { "buy": "10.9300" },
-        "RUB": { "buy": "0.1194" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5100", "sell": "9.6100" },
+        "EUR": { "buy": "10.9300", "sell": "11.1500" },
+        "RUB": { "buy": "0.1194", "sell": "0.1217" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -86,10 +86,10 @@
       "bank_id": "spitamen",
       "website": "https://spitamenbank.tj",
       "currencies": {
-        "USD": { "buy": "9.5738" },
-        "EUR": { "buy": "11.0520" },
-        "RUB": { "buy": "0.1200" },
-        "CNY": { "buy": "1.3908" }
+        "USD": { "buy": "9.5738", "sell": "9.5738" },
+        "EUR": { "buy": "11.0520", "sell": "11.0520" },
+        "RUB": { "buy": "0.1200", "sell": "0.1200" },
+        "CNY": { "buy": "1.3908", "sell": "1.3908" }
       }
     },
     {
@@ -97,10 +97,10 @@
       "bank_id": "dushanbe_city",
       "website": "https://dcbank.tj",
       "currencies": {
-        "USD": { "buy": "9.5000" },
-        "EUR": { "buy": "10.9300" },
-        "RUB": { "buy": "0.1190" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5000", "sell": "9.6000" },
+        "EUR": { "buy": "10.9300", "sell": "11.1500" },
+        "RUB": { "buy": "0.1190", "sell": "0.1215" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -108,10 +108,10 @@
       "bank_id": "tawhid",
       "website": "https://tawhidbank.tj",
       "currencies": {
-        "USD": { "buy": "9.5000" },
-        "EUR": { "buy": "10.9300" },
-        "RUB": { "buy": "0.1190" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5000", "sell": "9.6000" },
+        "EUR": { "buy": "10.9300", "sell": "11.1500" },
+        "RUB": { "buy": "0.1190", "sell": "0.1215" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -119,10 +119,10 @@
       "bank_id": "commerce",
       "website": "https://commercebank.tj",
       "currencies": {
-        "USD": { "buy": "9.5000" },
-        "EUR": { "buy": "10.9300" },
-        "RUB": { "buy": "0.1190" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5000", "sell": "9.6000" },
+        "EUR": { "buy": "10.9300", "sell": "11.1500" },
+        "RUB": { "buy": "0.1190", "sell": "0.1215" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     },
     {
@@ -130,10 +130,10 @@
       "bank_id": "imon",
       "website": "https://imonbank.tj",
       "currencies": {
-        "USD": { "buy": "9.5000" },
-        "EUR": { "buy": "10.9300" },
-        "RUB": { "buy": "0.1190" },
-        "CNY": { "buy": "1.3600" }
+        "USD": { "buy": "9.5000", "sell": "9.6000" },
+        "EUR": { "buy": "10.9300", "sell": "11.1500" },
+        "RUB": { "buy": "0.1190", "sell": "0.1215" },
+        "CNY": { "buy": "1.3600", "sell": "1.4100" }
       }
     }
   ]

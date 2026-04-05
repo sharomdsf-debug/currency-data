@@ -1,6 +1,6 @@
 {
   "project_name": "ASOR TJ",
-  "last_updated": "⚠️Кори техникӣ⏳",
+  "last_updated": "🔹5.04.2026 10:00",
   "base_currency": "TJS",
   "status": "success",
   "rates": [
@@ -9,10 +9,10 @@
       "bank_id": "nbt",
       "website": "https://nbt.tj",
       "currencies": {
-        "USD": { "buy": "10.8900", "sell": "10.8900" },
-        "EUR": { "buy": "11.7500", "sell": "11.7500" },
-        "RUB": { "buy": "0.1180", "sell": "0.1180" },
-        "CNY": { "buy": "1.5050", "sell": "1.5050" }
+        "USD": { "buy": "9.5738" },
+        "EUR": { "buy": "11.0520" },
+        "RUB": { "buy": "0.1200" },
+        "CNY": { "buy": "1.3908" }
       }
     },
     {
@@ -20,10 +20,10 @@
       "bank_id": "amonatbonk",
       "website": "https://amonatbonk.tj",
       "currencies": {
-        "USD": { "buy": "10.9100", "sell": "10.9600" },
-        "EUR": { "buy": "11.7100", "sell": "11.8800" },
-        "RUB": { "buy": "0.1178", "sell": "0.1192" },
-        "CNY": { "buy": "1.4900", "sell": "1.5200" }
+        "USD": { "buy": "9.5200" },
+        "EUR": { "buy": "10.9500" },
+        "RUB": { "buy": "0.1184" },
+        "CNY": { "buy": "1.3600" }
       }
     },
     {
@@ -31,10 +31,10 @@
       "bank_id": "eskhata",
       "website": "https://eskhata.com",
       "currencies": {
-        "USD": { "buy": "10.9200", "sell": "10.9600" },
-        "EUR": { "buy": "11.7000", "sell": "11.8500" },
-        "RUB": { "buy": "0.1175", "sell": "0.1195" },
-        "CNY": { "buy": "1.4850", "sell": "1.5300" }
+        "USD": { "buy": "9.5000" },
+        "EUR": { "buy": "10.9300" },
+        "RUB": { "buy": "0.1194" },
+        "CNY": { "buy": "1.3600" }
       }
     },
     {
@@ -42,10 +42,10 @@
       "bank_id": "ssb",
       "website": "https://ssb.tj",
       "currencies": {
-        "USD": { "buy": "10.9200", "sell": "10.9500" },
-        "EUR": { "buy": "11.7200", "sell": "11.8600" },
-        "RUB": { "buy": "0.1181", "sell": "0.1194" },
-        "CNY": { "buy": "1.4950", "sell": "1.5250" }
+        "USD": { "buy": "9.5400" },
+        "EUR": { "buy": "10.9500" },
+        "RUB": { "buy": "0.1194" },
+        "CNY": { "buy": "1.3600" }
       }
     },
     {
@@ -53,10 +53,10 @@
       "bank_id": "alif",
       "website": "https://alif.tj",
       "currencies": {
-        "USD": { "buy": "10.9300", "sell": "10.9600" },
-        "EUR": { "buy": "11.7500", "sell": "11.9500" },
-        "RUB": { "buy": "0.1185", "sell": "0.1198" },
-        "CNY": { "buy": "1.5000", "sell": "1.5400" }
+        "USD": { "buy": "9.5000" },
+        "EUR": { "buy": "10.9400" },
+        "RUB": { "buy": "0.1194" },
+        "CNY": { "buy": "1.3600" }
       }
     },
     {
@@ -64,10 +64,76 @@
       "bank_id": "humo",
       "website": "https://humo.tj",
       "currencies": {
-        "USD": { "buy": "10.9300", "sell": "10.9600" },
-        "EUR": { "buy": "11.7500", "sell": "11.9000" },
-        "RUB": { "buy": "0.1182", "sell": "0.1195" },
-        "CNY": { "buy": "1.4900", "sell": "1.5350" }
+        "USD": { "buy": "9.5000" },
+        "EUR": { "buy": "10.9300" },
+        "RUB": { "buy": "0.1194" },
+        "CNY": { "buy": "1.3600" }
+      }
+    },
+    {
+      "bank_name": "Ориёнбонк",
+      "bank_id": "oriyonbank",
+      "website": "https://oriyonbank.tj",
+      "currencies": {
+        "USD": { "buy": "9.5100" },
+        "EUR": { "buy": "10.9300" },
+        "RUB": { "buy": "0.1194" },
+        "CNY": { "buy": "1.3600" }
+      }
+    },
+    {
+      "bank_name": "Спитамен Бонк",
+      "bank_id": "spitamen",
+      "website": "https://spitamenbank.tj",
+      "currencies": {
+        "USD": { "buy": "9.5738" },
+        "EUR": { "buy": "11.0520" },
+        "RUB": { "buy": "0.1200" },
+        "CNY": { "buy": "1.3908" }
+      }
+    },
+    {
+      "bank_name": "Душанбе Сити",
+      "bank_id": "dushanbe_city",
+      "website": "https://dcbank.tj",
+      "currencies": {
+        "USD": { "buy": "9.5000" },
+        "EUR": { "buy": "10.9300" },
+        "RUB": { "buy": "0.1190" },
+        "CNY": { "buy": "1.3600" }
+      }
+    },
+    {
+      "bank_name": "Тавҳидбонк",
+      "bank_id": "tawhid",
+      "website": "https://tawhidbank.tj",
+      "currencies": {
+        "USD": { "buy": "9.5000" },
+        "EUR": { "buy": "10.9300" },
+        "RUB": { "buy": "0.1190" },
+        "CNY": { "buy": "1.3600" }
+      }
+    },
+    {
+      "bank_name": "Коммерсбонк",
+      "bank_id": "commerce",
+      "website": "https://commercebank.tj",
+      "currencies": {
+        "USD": { "buy": "9.5000" },
+        "EUR": { "buy": "10.9300" },
+        "RUB": { "buy": "0.1190" },
+        "CNY": { "buy": "1.3600" }
+      }
+    },
+    {
+      "bank_name": "Имон Интернешнл Банк",
+      "bank_id": "imon",
+      "website": "https://imonbank.tj",
+      "currencies": {
+        "USD": { "buy": "9.5000" },
+        "EUR": { "buy": "10.9300" },
+        "RUB": { "buy": "0.1190" },
+        "CNY": { "buy": "1.3600" }
       }
     }
   ]

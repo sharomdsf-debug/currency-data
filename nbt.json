@@ -1,0 +1,91 @@
+"currency_tj": "Кронаи Норвегия",
+      "currency_en": "Norwegian Krone",
+      "unit": 1,
+      "rate": 1.0110
+    },
+    {
+      "country": "Покистон",
+      "currency_tj": "Рупияи Покистон",
+      "currency_en": "Pakistani Rupee",
+      "unit": 10,
+      "rate": 0.3393
+    },
+    {
+      "country": "Лаҳистон",
+      "currency_tj": "Злотийи Лаҳистон",
+      "currency_en": "Polish Zloty",
+      "unit": 1,
+      "rate": 2.6376
+    },
+    {
+      "country": "Арабистони Саудӣ",
+      "currency_tj": "Риёли Арабистони Саудӣ",
+      "currency_en": "Saudi Arabian Riyal",
+      "unit": 1,
+      "rate": 2.5232
+    },
+    {
+      "country": "Русия",
+      "currency_tj": "Рубли Русия",
+      "currency_en": "Russian Ruble",
+      "unit": 1,
+      "rate": 0.1242
+    },
+    {
+      "country": "Сингапур",
+      "currency_tj": "Доллари Сингапур",
+      "currency_en": "Singapore Dollar",
+      "unit": 1,
+      "rate": 7.4374
+    },
+    {
+      "country": "Таиланд",
+      "currency_tj": "Бати Таиланд",
+      "currency_en": "Thai Baht",
+      "unit": 1,
+      "rate": 0.2950
+    },
+    {
+      "country": "Ӯзбекистон",
+      "currency_tj": "Сӯми Ӯзбекистон",
+      "currency_en": "Uzbekistan Som",
+      "unit": 100,
+      "rate": 0.0780
+    },
+    {
+      "country": "Украина",
+      "currency_tj": "Гривнаи Украина",
+      "currency_en": "Ukrainian Hryvnia",
+      "unit": 1,
+      "rate": 0.2151
+    },
+    {
+      "country": "Шветсия",
+      "currency_tj": "Кронаи Шветсия",
+      "currency_en": "Swedish Krona",
+      "unit": 1,
+      "rate": 1.0322
+    },
+    {
+      "country": "Швейтсария",
+      "currency_tj": "Франки Швейтсария",
+      "currency_en": "Swiss Franc",
+      "unit": 1,
+      "rate": 12.0920
+    },
+    {
+      "country": "Ҷопон",
+      "currency_tj": "Йени Ҷопон",
+      "currency_en": "Japanese Yen",
+      "unit": 10,
+      "rate": 0.5946
+    },
+    {
+      "country": "Кореяи Ҷанубӣ",
+      "currency_tj": "Вонаи Кореяи Ҷанубӣ",
+      "currency_en": "South Korean Won",
+      "unit": 100,
+      "rate": 0.6395
+    }
+  ]
+}

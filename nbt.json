@@ -1,3 +1,171 @@
+{
+  "date": "20.04.2026",
+  "source": "Бонки миллии Тоҷикистон (NBT)",
+  "url": "https://nbt.tj/tj/kurs/kurs.php",
+  "currencies": [
+    {
+      "country": "Австралия",
+      "currency_tj": "Доллари Австралия",
+      "currency_en": "Australian Dollar",
+      "unit": 1,
+      "rate": 6.7887
+    },
+    {
+      "country": "Озарбойҷон",
+      "currency_tj": "Манати Озарбойҷон",
+      "currency_en": "Azerbaijani Manat",
+      "unit": 1,
+      "rate": 5.5680
+    },
+    {
+      "country": "Британия",
+      "currency_tj": "Фунти стерлингҳои Инглистон",
+      "currency_en": "British Pound Sterling",
+      "unit": 1,
+      "rate": 12.8070
+    },
+    {
+      "country": "Арманистон",
+      "currency_tj": "Драми Арманистон",
+      "currency_en": "Armenian Dram",
+      "unit": 100,
+      "rate": 2.5298
+    },
+    {
+      "country": "Афғонистон",
+      "currency_tj": "Афғонии Афғонистон",
+      "currency_en": "Afghan Afghani",
+      "unit": 10,
+      "rate": 1.4587
+    },
+    {
+      "country": "Беларус",
+      "currency_tj": "Рубли нави Белорус",
+      "currency_en": "New Belarusian Ruble",
+      "unit": 1,
+      "rate": 3.3395
+    },
+    {
+      "country": "Гурҷистон",
+      "currency_tj": "Ларии Гурҷистон",
+      "currency_en": "Georgian Lari",
+      "unit": 1,
+      "rate": 3.5128
+    },
+    {
+      "country": "Дания",
+      "currency_tj": "Кронаи Дания",
+      "currency_en": "Danish Krone",
+      "unit": 1,
+      "rate": 1.4941
+    },
+    {
+      "country": "АМА",
+      "currency_tj": "Дирхами АМА",
+      "currency_en": "UAE Dirham",
+      "unit": 1,
+      "rate": 2.5769
+    },
+    {
+      "country": "ИМА",
+      "currency_tj": "Доллари ИМА",
+      "currency_en": "US Dollar",
+      "unit": 1,
+      "rate": 9.4656
+    },
+    {
+      "country": "Аврупо",
+      "currency_tj": "Евро",
+      "currency_en": "Euro",
+      "unit": 1,
+      "rate": 11.1666
+    },
+    {
+      "country": "Ҳиндустон",
+      "currency_tj": "Рупияи Ҳиндустон",
+      "currency_en": "Indian Rupee",
+      "unit": 10,
+      "rate": 1.0191
+    },
+    {
+      "country": "Эрон",
+      "currency_tj": "Риёли Эрон",
+      "currency_en": "Iranian Rial",
+      "unit": 1000,
+      "rate": 0.0072
+    },
+    {
+      "country": "Исландия",
+      "currency_tj": "Кронаи Исландия",
+      "currency_en": "Icelandic Krona",
+      "unit": 10,
+      "rate": 0.7746
+    },
+    {
+      "country": "Қазоқистон",
+      "currency_tj": "Тангаи Қазоқистон",
+      "currency_en": "Kazakhstani Tenge",
+      "unit": 10,
+      "rate": 0.2016
+    },
+    {
+      "country": "Канада",
+      "currency_tj": "Доллари Канада",
+      "currency_en": "Canadian Dollar",
+      "unit": 1,
+      "rate": 6.9198
+    },
+    {
+      "country": "Қирғизистон",
+      "currency_tj": "Соми Қирғизистон",
+      "currency_en": "Kyrgyzstani Som",
+      "unit": 10,
+      "rate": 1.0824
+    },
+    {
+      "country": "Хитой",
+      "currency_tj": "Юани Чин",
+      "currency_en": "Chinese Yuan",
+      "unit": 1,
+      "rate": 1.3871
+    },
+    {
+      "country": "Қувайт",
+      "currency_tj": "Динори Қувайт",
+      "currency_en": "Kuwaiti Dinar",
+      "unit": 1,
+      "rate": 30.9081
+    },
+    {
+      "country": "Малайзия",
+      "currency_tj": "Ринггити Малайзия",
+      "currency_en": "Malaysian Ringgit",
+      "unit": 1,
+      "rate": 2.3933
+    },
+    {
+      "country": "Молдова",
+      "currency_tj": "Лейи Молдова",
+      "currency_en": "Moldovan Leu",
+      "unit": 1,
+      "rate": 0.5530
+    },
+    {
+      "country": "Туркия",
+      "currency_tj": "Лири Туркия",
+      "currency_en": "Turkish Lira",
+      "unit": 1,
+      "rate": 0.2114
+    },
+    {
+      "country": "Туркманистон",
+      "currency_tj": "Манати нави Туркманистон",
+      "currency_en": "New Turkmenistan Manat",
+      "unit": 1,
+      "rate": 2.7045
+    },
+    {
+      "country": "Норвегия",
 "currency_tj": "Кронаи Норвегия",
       "currency_en": "Norwegian Krone",
       "unit": 1,

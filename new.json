@@ -1,7 +1,8 @@
 {
   "project_name": "ASOR TJ",
-  "total_banks": 24,
-"updated": "📡 02.05.2026 13:10",
+  "last_updated": "🔹6.04.2026 20:05",
+  "base_currency": "TJS",
+  "status": "success",
   "rates": [
     {
       "bank_name": "Бонки Миллии Тоҷикистон",

@@ -260,16 +260,6 @@
     {
       "bank_name": "Матин",
       "bank_id": "matin",
-      "currencies": {
-        "USD": {"buy":"9.2700","sell":"9.3700"},
-        "EUR": {"buy":"0.0000","sell":"0.0000"},
-        "RUB": {"buy":"0.1240","sell":"0.1260"},
-        "CNY": {"buy":"0.0000","sell":"0.0000"},
-        "KZT": {"buy":"0.0000","sell":"0.0000"}
-      },
-      {
-      "bank_name": "Матин",
-      "bank_id": "matin",
       "website": "https://matin.tj/",
       "currencies": {
         "USD": {

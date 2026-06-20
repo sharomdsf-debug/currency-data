@@ -1,5 +1,5 @@
 {
-  "date": "22.05.2026",
+  "date": "20.06.2026",
   "source": "Бонки миллии Тоҷикистон (NBT)",
   "url": "https://nbt.tj/tj/kurs/kurs.php",
   "currencies": [
@@ -8,252 +8,252 @@
       "currency_tj": "Доллари Австралия",
       "currency_en": "Australian Dollar",
       "unit": 1,
-      "rate": 6.6106
+      "rate": 6.5305
     },
     {
       "country": "Озарбойҷон",
       "currency_tj": "Манати Озарбойҷон",
       "currency_en": "Azerbaijani Manat",
       "unit": 1,
-      "rate": 5.4584
+      "rate": 5.4776
     },
     {
       "country": "Британия",
       "currency_tj": "Фунти стерлингҳои Инглистон",
       "currency_en": "British Pound Sterling",
       "unit": 1,
-      "rate": 12.4547
+      "rate": 12.3254
     },
     {
       "country": "Арманистон",
       "currency_tj": "Драми Арманистон",
       "currency_en": "Armenian Dram",
       "unit": 100,
-      "rate": 2.5225
+      "rate": 2.5291
     },
     {
       "country": "Афғонистон",
       "currency_tj": "Афғонии Афғонистон",
       "currency_en": "Afghan Afghani",
       "unit": 10,
-      "rate": 1.4540
+      "rate": 1.4428
     },
     {
       "country": "Беларус",
       "currency_tj": "Рубли нави Белорус",
       "currency_en": "New Belarusian Ruble",
       "unit": 1,
-      "rate": 3.3903
+      "rate": 3.3495
     },
     {
       "country": "Гурҷистон",
       "currency_tj": "Ларии Гурҷистон",
       "currency_en": "Georgian Lari",
       "unit": 1,
-      "rate": 3.4689
+      "rate": 3.5104
     },
     {
       "country": "Дания",
       "currency_tj": "Кронаи Дания",
       "currency_en": "Danish Krone",
       "unit": 1,
-      "rate": 1.4401
+      "rate": 1.4282
     },
     {
       "country": "АМА",
       "currency_tj": "Дирхами АМА",
       "currency_en": "UAE Dirham",
       "unit": 1,
-      "rate": 2.5261
+      "rate": 2.5355
     },
     {
       "country": "ИМА",
       "currency_tj": "Доллари ИМА",
       "currency_en": "US Dollar",
       "unit": 1,
-      "rate": 9.2793
+      "rate": 9.3120
     },
     {
       "country": "Аврупо",
       "currency_tj": "Евро",
       "currency_en": "Euro",
       "unit": 1,
-      "rate": 10.7631
+      "rate": 10.6753
     },
     {
       "country": "Ҳиндустон",
       "currency_tj": "Рупияи Ҳиндустон",
       "currency_en": "Indian Rupee",
       "unit": 10,
-      "rate": 0.9696
+      "rate": 0.9872
     },
     {
       "country": "Эрон",
       "currency_tj": "Риёли Эрон",
       "currency_en": "Iranian Rial",
       "unit": 1000,
-      "rate": 0.0070
+      "rate": 0.0068
     },
     {
       "country": "Исландия",
       "currency_tj": "Кронаи Исландия",
       "currency_en": "Icelandic Krona",
       "unit": 10,
-      "rate": 0.7486
+      "rate": 0.7415
     },
     {
       "country": "Қазоқистон",
       "currency_tj": "Тангаи Қазоқистон",
       "currency_en": "Kazakhstani Tenge",
       "unit": 10,
-      "rate": 0.1968
+      "rate": 0.1907
     },
     {
       "country": "Канада",
       "currency_tj": "Доллари Канада",
       "currency_en": "Canadian Dollar",
       "unit": 1,
-      "rate": 6.7236
+      "rate": 6.5818
     },
     {
       "country": "Қирғизистон",
       "currency_tj": "Соми Қирғизистон",
       "currency_en": "Kyrgyzstani Som",
       "unit": 10,
-      "rate": 1.0611
+      "rate": 1.0648
     },
     {
       "country": "Хитой",
       "currency_tj": "Юани Чин",
       "currency_en": "Chinese Yuan",
       "unit": 1,
-      "rate": 1.3650
+      "rate": 1.3714
     },
     {
       "country": "Қувайт",
       "currency_tj": "Динори Қувайт",
       "currency_en": "Kuwaiti Dinar",
       "unit": 1,
-      "rate": 30.2405
+      "rate": 30.2977
     },
     {
       "country": "Малайзия",
       "currency_tj": "Ринггити Малайзия",
       "currency_en": "Malaysian Ringgit",
       "unit": 1,
-      "rate": 2.3426
+      "rate": 2.2493
     },
     {
       "country": "Молдова",
       "currency_tj": "Лейи Молдова",
       "currency_en": "Moldovan Leu",
       "unit": 1,
-      "rate": 0.5344
+      "rate": 0.5280
     },
     {
       "country": "Туркия",
       "currency_tj": "Лири Туркия",
       "currency_en": "Turkish Lira",
       "unit": 1,
-      "rate": 0.2028
+      "rate": 0.2005
     },
     {
       "country": "Туркманистон",
       "currency_tj": "Манати нави Туркманистон",
       "currency_en": "New Turkmenistan Manat",
       "unit": 1,
-      "rate": 2.6512
+      "rate": 2.6606
     },
     {
       "country": "Норвегия",
       "currency_tj": "Кронаи Норвегия",
       "currency_en": "Norwegian Krone",
       "unit": 1,
-      "rate": 1.0034
+      "rate": 0.9605
     },
     {
       "country": "Покистон",
       "currency_tj": "Рупияи Покистон",
       "currency_en": "Pakistani Rupee",
       "unit": 10,
-      "rate": 0.3331
+      "rate": 0.3346
     },
     {
       "country": "Лаҳистон",
       "currency_tj": "Злотийи Лаҳистон",
       "currency_en": "Polish Zloty",
       "unit": 1,
-      "rate": 2.5397
+      "rate": 2.5045
     },
     {
       "country": "Арабистони Саудӣ",
       "currency_tj": "Риёли Арабистони Саудӣ",
       "currency_en": "Saudi Arabian Riyal",
       "unit": 1,
-      "rate": 2.4727
+      "rate": 2.4808
     },
     {
       "country": "Русия",
       "currency_tj": "Рубли Русия",
       "currency_en": "Russian Ruble",
       "unit": 1,
-      "rate": 0.1302
+      "rate": 0.1268
     },
     {
       "country": "Сингапур",
       "currency_tj": "Доллари Сингапур",
       "currency_en": "Singapore Dollar",
       "unit": 1,
-      "rate": 7.2472
+      "rate": 7.2102
     },
     {
       "country": "Таиланд",
       "currency_tj": "Бати Таиланд",
       "currency_en": "Thai Baht",
       "unit": 1,
-      "rate": 0.2841
+      "rate": 0.2830
     },
     {
       "country": "Ӯзбекистон",
       "currency_tj": "Сӯми Ӯзбекистон",
       "currency_en": "Uzbekistan Som",
       "unit": 100,
-      "rate": 0.0775
+      "rate": 0.0772
     },
     {
       "country": "Украина",
       "currency_tj": "Гривнаи Украина",
       "currency_en": "Ukrainian Hryvnia",
       "unit": 1,
-      "rate": 0.2097
+      "rate": 0.2073
     },
     {
       "country": "Шветсия",
       "currency_tj": "Кронаи Шветсия",
       "currency_en": "Swedish Krona",
       "unit": 1,
-      "rate": 0.9901
+      "rate": 0.9723
     },
     {
       "country": "Швейтсария",
       "currency_tj": "Франки Швейтсария",
       "currency_en": "Swiss Franc",
       "unit": 1,
-      "rate": 11.7952
+      "rate": 11.5448
     },
     {
       "country": "Ҷопон",
       "currency_tj": "Йени Ҷопон",
       "currency_en": "Japanese Yen",
       "unit": 10,
-      "rate": 0.5831
+      "rate": 0.5773
     },
     {
       "country": "Кореяи Ҷанубӣ",
       "currency_tj": "Вонаи Кореяи Ҷанубӣ",
       "currency_en": "South Korean Won",
       "unit": 100,
-      "rate": 0.6162
+      "rate": 0.6085
     }
   ]
 }

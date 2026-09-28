@@ -1,6 +1,6 @@
 {
   "project_name": "ASOR TJ",
-  "last_updated": "🔹 28.Сентябр 08:02",
+  "last_updated": "🔹 28.Сентябр 17:01",
   "base_currency": "TJS",
   "status": "success",
   "rates": [
@@ -113,16 +113,16 @@
       "bank_id": "eskhata",
       "currencies": {
         "USD": {
-          "buy": "9.1800",
-          "sell": "9.2700"
+          "buy": "9.1600",
+          "sell": "9.2600"
         },
         "EUR": {
-          "buy": "10.3800",
-          "sell": "10.5800"
+          "buy": "10.3600",
+          "sell": "10.5600"
         },
         "RUB": {
-          "buy": "0.1093",
-          "sell": "0.1113"
+          "buy": "0.1087",
+          "sell": "0.1107"
         },
         "CNY": {
           "buy": "0.0000",

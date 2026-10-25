@@ -1,6 +1,6 @@
 {
   "project_name": "ASOR TJ",
-  "last_updated": "🔹 25.Октябр 08:03",
+  "last_updated": "🔹 25.Октябр 17:03",
   "base_currency": "TJS",
   "status": "success",
   "rates": [
@@ -191,11 +191,11 @@
       "bank_id": "imon",
       "currencies": {
         "USD": {
-          "buy": "9.1690",
-          "sell": "9.2400"
+          "buy": "9.1600",
+          "sell": "9.1700"
         },
         "EUR": {
-          "buy": "10.2100",
+          "buy": "10.2000",
           "sell": "10.4000"
         },
         "RUB": {

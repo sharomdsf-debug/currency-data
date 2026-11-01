@@ -1,6 +1,6 @@
 {
   "project_name": "ASOR TJ",
-  "last_updated": "🔹 1.Ноябр 20:42",
+  "last_updated": "🔹 2.Ноябр 00:13",
   "base_currency": "TJS",
   "status": "success",
   "rates": [
@@ -273,8 +273,8 @@
           "sell": "10.6000"
         },
         "EUR": {
-          "buy": "0.0000",
-          "sell": "0.0000"
+          "buy": "9.2400",
+          "sell": "10.0000"
         },
         "RUB": {
           "buy": "0.1140",
@@ -321,12 +321,12 @@
       "bank_id": "icb",
       "currencies": {
         "USD": {
-          "buy": "9.2086",
-          "sell": "10.3118"
-        },
-        "EUR": {
           "buy": "9.2400",
           "sell": "10.2800"
+        },
+        "EUR": {
+          "buy": "9.1400",
+          "sell": "10.0800"
         },
         "RUB": {
           "buy": "0.1144",

@@ -1,6 +1,6 @@
 {
   "project_name": "ASOR TJ",
-  "last_updated": "🔹 25.Ноябр 17:04",
+  "last_updated": "🔹 26.Ноябр 00:10",
   "base_currency": "TJS",
   "status": "success",
   "rates": [
@@ -121,8 +121,8 @@
           "sell": "10.2000"
         },
         "RUB": {
-          "buy": "0.1115",
-          "sell": "0.1135"
+          "buy": "0.1118",
+          "sell": "0.1138"
         },
         "CNY": {
           "buy": "0.0000",
